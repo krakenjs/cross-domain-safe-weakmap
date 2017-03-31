@@ -20,6 +20,7 @@
         return __webpack_require__(0);
     }({
         0: function(module, exports, __webpack_require__) {
+            "use strict";
             Object.defineProperty(exports, "__esModule", {
                 value: true
             });
@@ -51,6 +52,7 @@
             exports["default"] = INTERFACE;
         },
         "./src/interface.js": function(module, exports, __webpack_require__) {
+            "use strict";
             Object.defineProperty(exports, "__esModule", {
                 value: true
             });
@@ -62,6 +64,7 @@
             }
         },
         "./src/weakmap.js": function(module, exports, __webpack_require__) {
+            "use strict";
             Object.defineProperty(exports, "__esModule", {
                 value: true
             });
@@ -192,6 +195,7 @@
             }();
         },
         "./src/util.js": function(module, exports) {
+            "use strict";
             Object.defineProperty(exports, "__esModule", {
                 value: true
             });

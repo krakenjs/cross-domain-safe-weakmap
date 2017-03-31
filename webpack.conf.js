@@ -1,7 +1,7 @@
 import webpack from 'webpack';
 
-export let FILE_NAME = 'mylibrary';
-export let MODULE_NAME = 'mylibrary';
+export let FILE_NAME = 'cross-domain-safe-weakmap';
+export let MODULE_NAME = 'xdsweakmap';
 
 function getWebpackConfig(filename) {
 

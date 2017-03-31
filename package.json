@@ -1,7 +1,7 @@
 {
-  "name": "grumbler",
+  "name": "cross-domain-safe-weakmap",
   "version": "1.0.0",
-  "description": "Javascript module template.",
+  "description": "Cross domain safe WeakMap.",
   "main": "index.js",
   "scripts": {
     "test": "gulp test"

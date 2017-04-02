@@ -56,12 +56,13 @@
             Object.defineProperty(exports, "__esModule", {
                 value: true
             });
-            var WeakMap = exports.WeakMap = void 0;
-            if (window.WeakMap) {
-                exports.WeakMap = WeakMap = window.WeakMap;
-            } else {
-                exports.WeakMap = WeakMap = __webpack_require__("./src/weakmap.js").WeakMap;
-            }
+            var _weakmap = __webpack_require__("./src/weakmap.js");
+            Object.defineProperty(exports, "WeakMap", {
+                enumerable: true,
+                get: function get() {
+                    return _weakmap.WeakMap;
+                }
+            });
         },
         "./src/weakmap.js": function(module, exports, __webpack_require__) {
             "use strict";
@@ -86,6 +87,7 @@
                 };
             }();
             var _util = __webpack_require__("./src/util.js");
+            var _native = __webpack_require__("./src/native.js");
             function _classCallCheck(instance, Constructor) {
                 if (!(instance instanceof Constructor)) {
                     throw new TypeError("Cannot call a class as a function");
@@ -98,97 +100,118 @@
                     _classCallCheck(this, WeakMap);
                     counter += 1;
                     this.name = "__weakmap_" + (Math.random() * 1e9 >>> 0) + "__" + counter;
+                    if ((0, _native.hasNativeWeakMap)()) {
+                        this.weakmap = new window.WeakMap();
+                    }
                     this.keys = [];
                     this.values = [];
                 }
                 _createClass(WeakMap, [ {
                     key: "set",
                     value: function set(key, value) {
-                        if ((0, _util.isWindow)(key)) {
-                            return this.safeSet(key, value);
+                        var weakmap = this.weakmap;
+                        if (weakmap) {
+                            try {
+                                weakmap.set(key, value);
+                            } catch (err) {
+                                delete this.weakmap;
+                            }
                         }
-                        var name = this.name;
-                        var entry = key[name];
-                        if (entry && entry[0] === key) {
-                            entry[1] = value;
+                        if ((0, _util.isWindow)(key)) {
+                            var keys = this.keys;
+                            var values = this.values;
+                            var index = keys.indexOf(key);
+                            if (index === -1) {
+                                keys.push(key);
+                                values.push(value);
+                            } else {
+                                values[index] = value;
+                            }
                         } else {
-                            defineProperty(key, name, {
-                                value: [ key, value ],
-                                writable: true
-                            });
+                            var name = this.name;
+                            var entry = key[name];
+                            if (entry && entry[0] === key) {
+                                entry[1] = value;
+                            } else {
+                                defineProperty(key, name, {
+                                    value: [ key, value ],
+                                    writable: true
+                                });
+                            }
                         }
                     }
                 }, {
                     key: "get",
                     value: function get(key) {
-                        if ((0, _util.isWindow)(key)) {
-                            return this.safeGet(key);
+                        var weakmap = this.weakmap;
+                        if (weakmap) {
+                            try {
+                                if (weakmap.has(key)) {
+                                    return weakmap.get(key);
+                                }
+                            } catch (err) {
+                                delete this.weakmap;
+                            }
                         }
-                        var entry = key[this.name];
-                        if (entry && entry[0] === key) {
-                            return entry[1];
+                        if ((0, _util.isWindow)(key)) {
+                            var keys = this.keys;
+                            var index = keys.indexOf(key);
+                            if (index === -1) {
+                                return;
+                            }
+                            return this.values[index];
+                        } else {
+                            var entry = key[this.name];
+                            if (entry && entry[0] === key) {
+                                return entry[1];
+                            }
                         }
                     }
                 }, {
                     key: "delete",
                     value: function _delete(key) {
-                        if ((0, _util.isWindow)(key)) {
-                            return this.safeDelete(key);
+                        var weakmap = this.weakmap;
+                        if (weakmap) {
+                            try {
+                                weakmap["delete"](key);
+                            } catch (err) {
+                                delete this.weakmap;
+                            }
                         }
-                        var entry = key[this.name];
-                        if (entry && entry[0] === key) {
-                            entry[0] = entry[1] = undefined;
+                        if ((0, _util.isWindow)(key)) {
+                            var keys = this.keys;
+                            var index = keys.indexOf(key);
+                            if (index !== -1) {
+                                keys.splice(index, 1);
+                                this.values.splice(index, 1);
+                            }
+                        } else {
+                            var entry = key[this.name];
+                            if (entry && entry[0] === key) {
+                                entry[0] = entry[1] = undefined;
+                            }
                         }
                     }
                 }, {
                     key: "has",
                     value: function has(key) {
+                        var weakmap = this.weakmap;
+                        if (weakmap) {
+                            try {
+                                return weakmap.has(key);
+                            } catch (err) {
+                                delete this.weakmap;
+                            }
+                        }
                         if ((0, _util.isWindow)(key)) {
-                            return this.safeHas(key);
+                            return this.keys.indexOf(key) !== -1;
+                        } else {
+                            var entry = key[this.name];
+                            if (entry && entry[0] === key) {
+                                return true;
+                            }
+                            return false;
                         }
-                        var entry = key[this.name];
-                        if (entry && entry[0] === key) {
-                            return true;
-                        }
-                        return false;
-                    }
-                }, {
-                    key: "safeSet",
-                    value: function safeSet(key, value) {
-                        var keys = this.keys;
-                        var values = this.values;
-                        var index = keys.indexOf(key);
-                        if (index === -1) {
-                            keys.push(key);
-                            values.push(value);
-                            return;
-                        }
-                        values[index] = value;
-                    }
-                }, {
-                    key: "safeGet",
-                    value: function safeGet(key) {
-                        var keys = this.keys;
-                        var index = keys.indexOf(key);
-                        if (index === -1) {
-                            return;
-                        }
-                        return this.values[index];
-                    }
-                }, {
-                    key: "safeDelete",
-                    value: function safeDelete(key) {
-                        var keys = this.keys;
-                        var index = keys.indexOf(key);
-                        if (index !== -1) {
-                            keys.splice(index, 1);
-                            this.values.splice(index, 1);
-                        }
-                    }
-                }, {
-                    key: "safeHas",
-                    value: function safeHas(key) {
-                        return this.keys.indexOf(key) !== -1;
                     }
                 } ]);
                 return WeakMap;
@@ -212,6 +235,34 @@
                     }
                 } catch (err) {}
                 return false;
+            }
+        },
+        "./src/native.js": function(module, exports) {
+            "use strict";
+            Object.defineProperty(exports, "__esModule", {
+                value: true
+            });
+            exports.hasNativeWeakMap = hasNativeWeakMap;
+            function hasNativeWeakMap() {
+                if (!window.WeakMap) {
+                    return false;
+                }
+                if (!window.Object.freeze) {
+                    return false;
+                }
+                try {
+                    var testWeakMap = new window.WeakMap();
+                    var testKey = {};
+                    var testValue = "__testvalue__";
+                    window.Object.freeze(testKey);
+                    testWeakMap.set(testKey, testValue);
+                    if (testWeakMap.get(testKey) === testValue) {
+                        return true;
+                    }
+                    return false;
+                } catch (err) {
+                    return false;
+                }
             }
         }
     });

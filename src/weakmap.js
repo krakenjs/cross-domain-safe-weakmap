@@ -1,6 +1,7 @@
 /* @flow */
 
 import { isWindow } from './util';
+import { hasNativeWeakMap } from './native';
 
 let defineProperty = Object.defineProperty;
 let counter = Date.now() % 1e9;
@@ -8,116 +9,155 @@ let counter = Date.now() % 1e9;
 export class WeakMap {
 
     name : string
+    weakmap : WeakMap
     keys : Array<mixed>
     values : Array<mixed>
 
     constructor() {
         counter += 1;
         this.name = `__weakmap_${Math.random() * 1e9 >>> 0}__${counter}`; // eslint-disable-line
+
+        if (hasNativeWeakMap()) {
+            this.weakmap = new window.WeakMap();
+        }
+
         this.keys = [];
         this.values = [];
     }
 
     set(key : Object, value : mixed) {
 
-        if (isWindow(key)) {
-            return this.safeSet(key, value);
+        let weakmap = this.weakmap;
+
+        if (weakmap) {
+            try {
+                weakmap.set(key, value);
+            } catch (err) {
+                delete this.weakmap;
+            }
         }
 
-        let name = this.name;
-        let entry = key[name];
+        if (isWindow(key)) {
 
-        if (entry && entry[0] === key) {
-            entry[1] = value;
+            let keys = this.keys;
+            let values = this.values;
+            let index = keys.indexOf(key);
+
+            if (index === -1) {
+                keys.push(key);
+                values.push(value);
+            } else {
+                values[index] = value;
+            }
+
         } else {
-            defineProperty(key, name, {
-                value: [ key, value ],
-                writable: true
-            });
+
+            let name = this.name;
+            let entry = key[name];
+
+            if (entry && entry[0] === key) {
+                entry[1] = value;
+            } else {
+                defineProperty(key, name, {
+                    value: [ key, value ],
+                    writable: true
+                });
+            }
         }
     }
 
     get(key : Object) : ?mixed {
 
-        if (isWindow(key)) {
-            return this.safeGet(key);
+        let weakmap = this.weakmap;
+
+        if (weakmap) {
+            try {
+                if (weakmap.has(key)) {
+                    return weakmap.get(key);
+                }
+            } catch (err) {
+                delete this.weakmap;
+            }
         }
 
-        let entry = key[this.name];
+        if (isWindow(key)) {
 
-        if (entry && entry[0] === key) {
-            return entry[1];
+            let keys = this.keys;
+            let index = keys.indexOf(key);
+
+            if (index === -1) {
+                return;
+            }
+
+            return this.values[index];
+
+        } else {
+
+            let entry = key[this.name];
+
+            if (entry && entry[0] === key) {
+                return entry[1];
+            }
         }
     }
 
     delete(key : Object) {
 
-        if (isWindow(key)) {
-            return this.safeDelete(key);
+        let weakmap = this.weakmap;
+
+        if (weakmap) {
+            try {
+                weakmap.delete(key);
+            } catch (err) {
+                delete this.weakmap;
+            }
         }
 
-        let entry = key[this.name];
+        if (isWindow(key)) {
 
-        if (entry && entry[0] === key) {
-            entry[0] = entry[1] = undefined;
+            let keys = this.keys;
+            let index = keys.indexOf(key);
+
+            if (index !== -1) {
+                keys.splice(index, 1);
+                this.values.splice(index, 1);
+            }
+
+        } else {
+
+            let entry = key[this.name];
+
+            if (entry && entry[0] === key) {
+                entry[0] = entry[1] = undefined;
+            }
         }
     }
 
     has(key : Object) {
 
+        let weakmap = this.weakmap;
+
+        if (weakmap) {
+            try {
+                return weakmap.has(key);
+            } catch (err) {
+                delete this.weakmap;
+            }
+        }
+
         if (isWindow(key)) {
-            return this.safeHas(key);
+
+            return this.keys.indexOf(key) !== -1;
+
+        } else {
+
+            let entry = key[this.name];
+
+            if (entry && entry[0] === key) {
+                return true;
+            }
+
+            return false;
         }
-
-        let entry = key[this.name];
-
-        if (entry && entry[0] === key) {
-            return true;
-        }
-
-        return false;
-    }
-
-    safeSet(key : Object, value : mixed) {
-
-        let keys = this.keys;
-        let values = this.values;
-        let index = keys.indexOf(key);
-
-        if (index === -1) {
-            keys.push(key);
-            values.push(value);
-            return;
-        }
-
-        values[index] = value;
-    }
-
-    safeGet(key : Object) : ?mixed {
-
-        let keys = this.keys;
-        let index = keys.indexOf(key);
-
-        if (index === -1) {
-            return;
-        }
-
-        return this.values[index];
-    }
-
-    safeDelete(key : Object) {
-
-        let keys = this.keys;
-        let index = keys.indexOf(key);
-
-        if (index !== -1) {
-            keys.splice(index, 1);
-            this.values.splice(index, 1);
-        }
-    }
-
-    safeHas(key : Object) {
-
-        return this.keys.indexOf(key) !== -1;
     }
 }

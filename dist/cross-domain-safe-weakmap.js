@@ -223,14 +223,9 @@
                 value: true
             });
             exports.isWindow = isWindow;
-            var windows = [];
             function isWindow(obj) {
-                if (windows.indexOf(obj) !== -1) {
-                    return true;
-                }
                 try {
                     if (obj && obj.self === obj) {
-                        windows.push(obj);
                         return true;
                     }
                 } catch (err) {}

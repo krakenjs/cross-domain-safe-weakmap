@@ -1,6 +1,6 @@
 /* @flow */
 
-import { isWindow } from './util';
+import { isWindow, isClosedWindow } from './util';
 import { hasNativeWeakMap } from './native';
 
 let defineProperty = Object.defineProperty;
@@ -10,7 +10,7 @@ export class WeakMap {
 
     name : string
     weakmap : WeakMap
-    keys : Array<mixed>
+    keys : Array<Object>
     values : Array<mixed>
 
     constructor() {
@@ -23,6 +23,28 @@ export class WeakMap {
 
         this.keys = [];
         this.values = [];
+    }
+
+    _cleanupClosedWindows() {
+
+        let weakmap = this.weakmap;
+        let keys = this.keys;
+
+        for (let i = 0; i < keys.length; i++) {
+            let value = keys[i];
+
+            if (isClosedWindow(value)) {
+
+                if (weakmap) {
+                    weakmap.delete(value);
+                }
+
+                keys.splice(i, 1);
+                this.values.splice(i, 1);
+
+                i -= 1;
+            }
+        }
     }
 
     set(key : Object, value : mixed) {
@@ -38,6 +60,8 @@ export class WeakMap {
         }
 
         if (isWindow(key)) {
+
+            this._cleanupClosedWindows();
 
             let keys = this.keys;
             let values = this.values;
@@ -81,7 +105,7 @@ export class WeakMap {
         }
 
         if (isWindow(key)) {
-
+            
             let keys = this.keys;
             let index = keys.indexOf(key);
 
@@ -115,6 +139,8 @@ export class WeakMap {
 
         if (isWindow(key)) {
 
+            this._cleanupClosedWindows();
+
             let keys = this.keys;
             let index = keys.indexOf(key);
 
@@ -146,6 +172,8 @@ export class WeakMap {
         }
 
         if (isWindow(key)) {
+
+            this._cleanupClosedWindows();
 
             return this.keys.indexOf(key) !== -1;
 

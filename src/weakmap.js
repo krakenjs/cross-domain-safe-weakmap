@@ -18,7 +18,11 @@ export class WeakMap {
         this.name = `__weakmap_${Math.random() * 1e9 >>> 0}__${counter}`; // eslint-disable-line
 
         if (hasNativeWeakMap()) {
-            this.weakmap = new window.WeakMap();
+            try {
+                this.weakmap = new window.WeakMap();
+            } catch (err) {
+                // pass
+            }
         }
 
         this.keys = [];
@@ -36,7 +40,11 @@ export class WeakMap {
             if (isClosedWindow(value)) {
 
                 if (weakmap) {
-                    weakmap.delete(value);
+                    try {
+                        weakmap.delete(value);
+                    } catch (err) {
+                        // pass
+                    }    
                 }
 
                 keys.splice(i, 1);
@@ -105,7 +113,7 @@ export class WeakMap {
         }
 
         if (isWindow(key)) {
-            
+
             let keys = this.keys;
             let index = keys.indexOf(key);
 

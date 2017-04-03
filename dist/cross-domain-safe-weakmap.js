@@ -101,7 +101,9 @@
                     counter += 1;
                     this.name = "__weakmap_" + (Math.random() * 1e9 >>> 0) + "__" + counter;
                     if ((0, _native.hasNativeWeakMap)()) {
-                        this.weakmap = new window.WeakMap();
+                        try {
+                            this.weakmap = new window.WeakMap();
+                        } catch (err) {}
                     }
                     this.keys = [];
                     this.values = [];
@@ -115,7 +117,9 @@
                             var value = keys[i];
                             if ((0, _util.isClosedWindow)(value)) {
                                 if (weakmap) {
-                                    weakmap["delete"](value);
+                                    try {
+                                        weakmap["delete"](value);
+                                    } catch (err) {}
                                 }
                                 keys.splice(i, 1);
                                 this.values.splice(i, 1);

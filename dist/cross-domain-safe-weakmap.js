@@ -107,6 +107,23 @@
                     this.values = [];
                 }
                 _createClass(WeakMap, [ {
+                    key: "_cleanupClosedWindows",
+                    value: function _cleanupClosedWindows() {
+                        var weakmap = this.weakmap;
+                        var keys = this.keys;
+                        for (var i = 0; i < keys.length; i++) {
+                            var value = keys[i];
+                            if ((0, _util.isClosedWindow)(value)) {
+                                if (weakmap) {
+                                    weakmap["delete"](value);
+                                }
+                                keys.splice(i, 1);
+                                this.values.splice(i, 1);
+                                i -= 1;
+                            }
+                        }
+                    }
+                }, {
                     key: "set",
                     value: function set(key, value) {
                         var weakmap = this.weakmap;
@@ -118,6 +135,7 @@
                             }
                         }
                         if ((0, _util.isWindow)(key)) {
+                            this._cleanupClosedWindows();
                             var keys = this.keys;
                             var values = this.values;
                             var index = keys.indexOf(key);
@@ -179,6 +197,7 @@
                             }
                         }
                         if ((0, _util.isWindow)(key)) {
+                            this._cleanupClosedWindows();
                             var keys = this.keys;
                             var index = keys.indexOf(key);
                             if (index !== -1) {
@@ -204,6 +223,7 @@
                             }
                         }
                         if ((0, _util.isWindow)(key)) {
+                            this._cleanupClosedWindows();
                             return this.keys.indexOf(key) !== -1;
                         } else {
                             var entry = key[this.name];
@@ -223,12 +243,26 @@
                 value: true
             });
             exports.isWindow = isWindow;
+            exports.isClosedWindow = isClosedWindow;
             function isWindow(obj) {
                 try {
                     if (obj && obj.self === obj) {
                         return true;
                     }
                 } catch (err) {}
+                return false;
+            }
+            function isClosedWindow(obj) {
+                try {
+                    if (obj && obj !== window && obj.closed) {
+                        return true;
+                    }
+                } catch (err) {
+                    if (err && err.message === "Call was rejected by callee.\r\n") {
+                        return false;
+                    }
+                    return true;
+                }
                 return false;
             }
         },

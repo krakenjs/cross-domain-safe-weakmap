@@ -130,6 +130,9 @@
                 }, {
                     key: "set",
                     value: function set(key, value) {
+                        if (!key) {
+                            throw new Error("WeakMap expected key");
+                        }
                         var weakmap = this.weakmap;
                         if (weakmap) {
                             try {
@@ -165,6 +168,9 @@
                 }, {
                     key: "get",
                     value: function get(key) {
+                        if (!key) {
+                            throw new Error("WeakMap expected key");
+                        }
                         var weakmap = this.weakmap;
                         if (weakmap) {
                             try {
@@ -192,6 +198,9 @@
                 }, {
                     key: "delete",
                     value: function _delete(key) {
+                        if (!key) {
+                            throw new Error("WeakMap expected key");
+                        }
                         var weakmap = this.weakmap;
                         if (weakmap) {
                             try {
@@ -218,6 +227,9 @@
                 }, {
                     key: "has",
                     value: function has(key) {
+                        if (!key) {
+                            throw new Error("WeakMap expected key");
+                        }
                         var weakmap = this.weakmap;
                         if (weakmap) {
                             try {

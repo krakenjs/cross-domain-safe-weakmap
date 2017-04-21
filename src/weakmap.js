@@ -44,7 +44,7 @@ export class WeakMap {
                         weakmap.delete(value);
                     } catch (err) {
                         // pass
-                    }    
+                    }
                 }
 
                 keys.splice(i, 1);
@@ -56,6 +56,10 @@ export class WeakMap {
     }
 
     set(key : Object, value : mixed) {
+
+        if (!key) {
+            throw new Error(`WeakMap expected key`);
+        }
 
         let weakmap = this.weakmap;
 
@@ -100,6 +104,10 @@ export class WeakMap {
 
     get(key : Object) : ?mixed {
 
+        if (!key) {
+            throw new Error(`WeakMap expected key`);
+        }
+
         let weakmap = this.weakmap;
 
         if (weakmap) {
@@ -135,6 +143,10 @@ export class WeakMap {
 
     delete(key : Object) {
 
+        if (!key) {
+            throw new Error(`WeakMap expected key`);
+        }
+
         let weakmap = this.weakmap;
 
         if (weakmap) {
@@ -168,6 +180,10 @@ export class WeakMap {
     }
 
     has(key : Object) {
+
+        if (!key) {
+            throw new Error(`WeakMap expected key`);
+        }
 
         let weakmap = this.weakmap;
 

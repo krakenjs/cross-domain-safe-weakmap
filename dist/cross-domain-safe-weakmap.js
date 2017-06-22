@@ -60,7 +60,7 @@
             Object.defineProperty(exports, "WeakMap", {
                 enumerable: true,
                 get: function get() {
-                    return _weakmap.WeakMap;
+                    return _weakmap.CrossDomainSafeWeakMap;
                 }
             });
         },
@@ -69,7 +69,7 @@
             Object.defineProperty(exports, "__esModule", {
                 value: true
             });
-            exports.WeakMap = undefined;
+            exports.CrossDomainSafeWeakMap = undefined;
             var _createClass = function() {
                 function defineProperties(target, props) {
                     for (var i = 0; i < props.length; i++) {
@@ -95,9 +95,9 @@
             }
             var defineProperty = Object.defineProperty;
             var counter = Date.now() % 1e9;
-            var WeakMap = exports.WeakMap = function() {
-                function WeakMap() {
-                    _classCallCheck(this, WeakMap);
+            var CrossDomainSafeWeakMap = exports.CrossDomainSafeWeakMap = function() {
+                function CrossDomainSafeWeakMap() {
+                    _classCallCheck(this, CrossDomainSafeWeakMap);
                     counter += 1;
                     this.name = "__weakmap_" + (Math.random() * 1e9 >>> 0) + "__" + counter;
                     if ((0, _native.hasNativeWeakMap)()) {
@@ -108,7 +108,7 @@
                     this.keys = [];
                     this.values = [];
                 }
-                _createClass(WeakMap, [ {
+                _createClass(CrossDomainSafeWeakMap, [ {
                     key: "_cleanupClosedWindows",
                     value: function _cleanupClosedWindows() {
                         var weakmap = this.weakmap;
@@ -250,7 +250,7 @@
                         }
                     }
                 } ]);
-                return WeakMap;
+                return CrossDomainSafeWeakMap;
             }();
         },
         "./src/util.js": function(module, exports) {

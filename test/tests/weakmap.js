@@ -1,6 +1,6 @@
 /* @flow */
 
-import { WeakMap } from 'src/weakmap';
+import { WeakMap } from 'src/interface';
 
 describe('weakmap standard cases', () => {
 

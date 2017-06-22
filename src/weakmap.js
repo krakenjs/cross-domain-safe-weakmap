@@ -6,12 +6,12 @@ import { hasNativeWeakMap } from './native';
 let defineProperty = Object.defineProperty;
 let counter = Date.now() % 1e9;
 
-export class WeakMap {
+export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
     name : string
-    weakmap : WeakMap
-    keys : Array<Object>
-    values : Array<mixed>
+    weakmap : WeakMap<K, V>
+    keys : Array<K>
+    values : Array<V>
 
     constructor() {
         counter += 1;
@@ -25,7 +25,7 @@ export class WeakMap {
             }
         }
 
-        this.keys = [];
+        this.keys  = [];
         this.values = [];
     }
 
@@ -55,7 +55,7 @@ export class WeakMap {
         }
     }
 
-    set(key : Object, value : mixed) {
+    set(key : K, value : V) {
 
         if (!key) {
             throw new Error(`WeakMap expected key`);
@@ -102,7 +102,7 @@ export class WeakMap {
         }
     }
 
-    get(key : Object) : ?mixed {
+    get(key : K) : V | void {
 
         if (!key) {
             throw new Error(`WeakMap expected key`);
@@ -141,7 +141,7 @@ export class WeakMap {
         }
     }
 
-    delete(key : Object) {
+    delete(key : K) {
 
         if (!key) {
             throw new Error(`WeakMap expected key`);
@@ -179,7 +179,7 @@ export class WeakMap {
         }
     }
 
-    has(key : Object) {
+    has(key : K) {
 
         if (!key) {
             throw new Error(`WeakMap expected key`);

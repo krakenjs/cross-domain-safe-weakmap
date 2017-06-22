@@ -65,6 +65,7 @@ module.exports = function(config) {
                                 'transform-flow-strip-types',
                                 'transform-es3-property-literals',
                                 'transform-es3-member-expression-literals',
+                                'transform-class-properties',
                                 ['transform-es2015-for-of', {loose: true}],
                                 ['flow-runtime', {
                                     'assert': true,

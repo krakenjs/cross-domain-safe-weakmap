@@ -1,6 +1,7 @@
 /* @flow */
 
 import { WeakMap } from 'src/interface';
+import { describe, it } from 'mocha';
 
 describe('weakmap standard cases', () => {
 

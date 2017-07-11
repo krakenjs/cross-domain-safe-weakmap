@@ -27,8 +27,7 @@
         "document": true,
         "Promise": false,
         "performance": true,
-        "assert": true,
-        "__TEST__": true
+        "assert": true
     },
 
     "fix": true,

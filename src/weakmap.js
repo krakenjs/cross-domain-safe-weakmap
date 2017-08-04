@@ -1,10 +1,14 @@
 /* @flow */
 
-import { isWindow, isClosedWindow } from './util';
+import { isWindow, isWindowClosed } from 'cross-domain-utils/src';
 import { hasNativeWeakMap } from './native';
 
 let defineProperty = Object.defineProperty;
 let counter = Date.now() % 1e9;
+
+function noop() {
+    // pass
+}
 
 export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
@@ -37,7 +41,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
         for (let i = 0; i < keys.length; i++) {
             let value = keys[i];
 
-            if (isClosedWindow(value)) {
+            if (isWindowClosed(value)) {
 
                 if (weakmap) {
                     try {
@@ -53,6 +57,22 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
                 i -= 1;
             }
         }
+    }
+
+    isSafeToReadWrite(key : K) : boolean {
+
+        if (isWindow(key)) {
+            return false;
+        }
+
+        try {
+            noop(key && key.self);
+            noop(key && key[this.name]);
+        } catch (err) {
+            return false;
+        }
+
+        return true;
     }
 
     set(key : K, value : V) {
@@ -71,7 +91,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             }
         }
 
-        if (isWindow(key)) {
+        if (!this.isSafeToReadWrite(key)) {
 
             this._cleanupClosedWindows();
 
@@ -120,7 +140,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             }
         }
 
-        if (isWindow(key)) {
+        if (!this.isSafeToReadWrite(key)) {
 
             let keys = this.keys;
             let index = keys.indexOf(key);
@@ -157,7 +177,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             }
         }
 
-        if (isWindow(key)) {
+        if (!this.isSafeToReadWrite(key)) {
 
             this._cleanupClosedWindows();
 
@@ -195,7 +215,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             }
         }
 
-        if (isWindow(key)) {
+        if (!this.isSafeToReadWrite(key)) {
 
             this._cleanupClosedWindows();
 

@@ -67,10 +67,10 @@ module.exports = function(config) {
                                 'transform-es3-member-expression-literals',
                                 'transform-class-properties',
                                 ['transform-es2015-for-of', {loose: true}],
-                                ['flow-runtime', {
+                                /* ['flow-runtime', {
                                     'assert': true,
                                     'annotate': true
-                                }],
+                                }], */
                                 [ '__coverage__', { only: `${__dirname}/src` } ]
                             ]
                         }

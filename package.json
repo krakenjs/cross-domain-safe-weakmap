@@ -4,6 +4,7 @@
   "description": "Cross domain safe WeakMap.",
   "main": "index.js",
   "scripts": {
+    "postinstall": "node postinstall.js",
     "test": "gulp test"
   },
   "repository": {
@@ -76,5 +77,7 @@
     "webpack": "^1.13.1",
     "yargs": "^4.7.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "cross-domain-utils": "^1.0.19"
+  }
 }

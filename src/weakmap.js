@@ -6,7 +6,7 @@ import { hasNativeWeakMap } from './native';
 let defineProperty = Object.defineProperty;
 let counter = Date.now() % 1e9;
 
-function noop() {
+function noop(...args) {
     // pass
 }
 

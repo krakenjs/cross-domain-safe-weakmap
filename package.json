@@ -1,6 +1,6 @@
 {
   "name": "cross-domain-safe-weakmap",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Cross domain safe WeakMap.",
   "main": "index.js",
   "scripts": {

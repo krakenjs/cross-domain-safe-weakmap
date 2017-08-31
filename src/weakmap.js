@@ -142,6 +142,8 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
         if (!this.isSafeToReadWrite(key)) {
 
+            this._cleanupClosedWindows();
+
             let keys = this.keys;
             let index = keys.indexOf(key);
 

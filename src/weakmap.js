@@ -1,14 +1,12 @@
 /* @flow */
 
 import { isWindow, isWindowClosed } from 'cross-domain-utils/src';
+
 import { hasNativeWeakMap } from './native';
+import { noop, safeIndexOf } from './util';
 
 let defineProperty = Object.defineProperty;
 let counter = Date.now() % 1e9;
-
-function noop(...args) {
-    // pass
-}
 
 export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
@@ -41,7 +39,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
         for (let i = 0; i < keys.length; i++) {
             let value = keys[i];
 
-            if (isWindowClosed(value)) {
+            if (isWindow(value) && isWindowClosed(value)) {
 
                 if (weakmap) {
                     try {
@@ -97,7 +95,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
             let keys = this.keys;
             let values = this.values;
-            let index = keys.indexOf(key);
+            let index = safeIndexOf(keys, key);
 
             if (index === -1) {
                 keys.push(key);
@@ -145,7 +143,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             this._cleanupClosedWindows();
 
             let keys = this.keys;
-            let index = keys.indexOf(key);
+            let index = safeIndexOf(keys, key);
 
             if (index === -1) {
                 return;
@@ -184,7 +182,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             this._cleanupClosedWindows();
 
             let keys = this.keys;
-            let index = keys.indexOf(key);
+            let index = safeIndexOf(keys, key);
 
             if (index !== -1) {
                 keys.splice(index, 1);
@@ -221,7 +219,8 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
             this._cleanupClosedWindows();
 
-            return this.keys.indexOf(key) !== -1;
+            let index = safeIndexOf(this.keys, key);
+            return index !== -1;
 
         } else {
 

@@ -88,6 +88,7 @@
             }();
             var _src = __webpack_require__("./node_modules/cross-domain-utils/src/index.js");
             var _native = __webpack_require__("./src/native.js");
+            var _util = __webpack_require__("./src/util.js");
             function _classCallCheck(instance, Constructor) {
                 if (!(instance instanceof Constructor)) {
                     throw new TypeError("Cannot call a class as a function");
@@ -95,7 +96,6 @@
             }
             var defineProperty = Object.defineProperty;
             var counter = Date.now() % 1e9;
-            function noop() {}
             var CrossDomainSafeWeakMap = exports.CrossDomainSafeWeakMap = function() {
                 function CrossDomainSafeWeakMap() {
                     _classCallCheck(this, CrossDomainSafeWeakMap);
@@ -116,7 +116,7 @@
                         var keys = this.keys;
                         for (var i = 0; i < keys.length; i++) {
                             var value = keys[i];
-                            if ((0, _src.isWindowClosed)(value)) {
+                            if ((0, _src.isWindow)(value) && (0, _src.isWindowClosed)(value)) {
                                 if (weakmap) {
                                     try {
                                         weakmap["delete"](value);
@@ -135,8 +135,8 @@
                             return false;
                         }
                         try {
-                            noop(key && key.self);
-                            noop(key && key[this.name]);
+                            (0, _util.noop)(key && key.self);
+                            (0, _util.noop)(key && key[this.name]);
                         } catch (err) {
                             return false;
                         }
@@ -160,7 +160,7 @@
                             this._cleanupClosedWindows();
                             var keys = this.keys;
                             var values = this.values;
-                            var index = keys.indexOf(key);
+                            var index = (0, _util.safeIndexOf)(keys, key);
                             if (index === -1) {
                                 keys.push(key);
                                 values.push(value);
@@ -199,7 +199,7 @@
                         if (!this.isSafeToReadWrite(key)) {
                             this._cleanupClosedWindows();
                             var keys = this.keys;
-                            var index = keys.indexOf(key);
+                            var index = (0, _util.safeIndexOf)(keys, key);
                             if (index === -1) {
                                 return;
                             }
@@ -228,7 +228,7 @@
                         if (!this.isSafeToReadWrite(key)) {
                             this._cleanupClosedWindows();
                             var keys = this.keys;
-                            var index = keys.indexOf(key);
+                            var index = (0, _util.safeIndexOf)(keys, key);
                             if (index !== -1) {
                                 keys.splice(index, 1);
                                 this.values.splice(index, 1);
@@ -256,7 +256,8 @@
                         }
                         if (!this.isSafeToReadWrite(key)) {
                             this._cleanupClosedWindows();
-                            return this.keys.indexOf(key) !== -1;
+                            var index = (0, _util.safeIndexOf)(this.keys, key);
+                            return index !== -1;
                         } else {
                             var entry = key[this.name];
                             if (entry && entry[0] === key) {
@@ -317,6 +318,7 @@
                 FILE_PROTOCOL: "file:",
                 WILDCARD: "*"
             };
+            var IE_WIN_ACCESS_ERROR = "Call was rejected by callee.\r\n";
             function getActualDomain(win) {
                 var location = win.location;
                 if (!location) {
@@ -567,6 +569,16 @@
                 }
                 return false;
             }
+            function safeIndexOf(collection, item) {
+                for (var i = 0; i < collection.length; i++) {
+                    try {
+                        if (collection[i] === item) {
+                            return i;
+                        }
+                    } catch (err) {}
+                }
+                return -1;
+            }
             var iframeWindows = [];
             var iframeFrames = [];
             function isWindowClosed(win) {
@@ -590,7 +602,7 @@
                         return true;
                     }
                 } catch (err) {
-                    if (err && err.message === "Call was rejected by callee.\r\n") {
+                    if (err && err.message === IE_WIN_ACCESS_ERROR) {
                         return false;
                     }
                     return true;
@@ -608,14 +620,17 @@
                     }
                 } catch (err) {}
                 try {
-                    var index = iframeWindows.indexOf(win);
-                    if (index !== -1) {
-                        var frame = iframeFrames[index];
-                        if (frame && isFrameWindowClosed(frame)) {
-                            return true;
-                        }
+                    (0, _util.noop)(win === win);
+                } catch (err) {
+                    return true;
+                }
+                var iframeIndex = safeIndexOf(iframeWindows, win);
+                if (iframeIndex !== -1) {
+                    var frame = iframeFrames[iframeIndex];
+                    if (frame && isFrameWindowClosed(frame)) {
+                        return true;
                     }
-                } catch (err) {}
+                }
                 return false;
             }
             function cleanIframes() {
@@ -941,10 +956,60 @@
             }
             function isWindow(obj) {
                 try {
+                    if (obj === window) {
+                        return true;
+                    }
+                } catch (err) {
+                    if (err && err.message === IE_WIN_ACCESS_ERROR) {
+                        return true;
+                    }
+                }
+                try {
+                    if (window.Window && obj instanceof window.Window) {
+                        return true;
+                    }
+                } catch (err) {
+                    if (err && err.message === IE_WIN_ACCESS_ERROR) {
+                        return true;
+                    }
+                }
+                try {
                     if (obj && obj.self === obj) {
                         return true;
                     }
-                } catch (err) {}
+                } catch (err) {
+                    if (err && err.message === IE_WIN_ACCESS_ERROR) {
+                        return true;
+                    }
+                }
+                try {
+                    if (obj && obj.parent === obj) {
+                        return true;
+                    }
+                } catch (err) {
+                    if (err && err.message === IE_WIN_ACCESS_ERROR) {
+                        return true;
+                    }
+                }
+                try {
+                    if (obj && obj.top === obj) {
+                        return true;
+                    }
+                } catch (err) {
+                    if (err && err.message === IE_WIN_ACCESS_ERROR) {
+                        return true;
+                    }
+                }
+                try {
+                    (0, _util.noop)(obj === obj);
+                } catch (err) {
+                    return true;
+                }
+                try {
+                    (0, _util.noop)(obj && obj.__cross_domain_utils_window_check__);
+                } catch (err) {
+                    return true;
+                }
                 return false;
             }
         },
@@ -954,9 +1019,11 @@
                 value: true
             });
             exports.isRegex = isRegex;
+            exports.noop = noop;
             function isRegex(item) {
                 return Object.prototype.toString.call(item) === "[object RegExp]";
             }
+            function noop() {}
         },
         "./src/native.js": function(module, exports) {
             "use strict";
@@ -985,6 +1052,25 @@
                     return false;
                 }
             }
+        },
+        "./src/util.js": function(module, exports) {
+            "use strict";
+            Object.defineProperty(exports, "__esModule", {
+                value: true
+            });
+            exports.safeIndexOf = safeIndexOf;
+            exports.noop = noop;
+            function safeIndexOf(collection, item) {
+                for (var i = 0; i < collection.length; i++) {
+                    try {
+                        if (collection[i] === item) {
+                            return i;
+                        }
+                    } catch (err) {}
+                }
+                return -1;
+            }
+            function noop() {}
         }
     });
 });

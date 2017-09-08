@@ -15,6 +15,6 @@ export function safeIndexOf<T>(collection : Array<T>, item : T) {
     return -1;
 }
 
-export function noop(...args) {
+export function noop(...args : Array<mixed>) {
     // pass
 }

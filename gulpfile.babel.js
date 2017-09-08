@@ -25,7 +25,9 @@ gulp.task('webpack-major-min', ['lint'], function() {
 
 gulp.task('typecheck', function() {
     return gulp.src([ 'src/**/*.js', 'test/**/*.js' ])
-        .pipe(flow())
+        .pipe(flow({
+            abort: true
+        }))
 });
 
 gulp.task('lint', function() {

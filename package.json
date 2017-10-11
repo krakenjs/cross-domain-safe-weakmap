@@ -79,6 +79,6 @@
     "yargs": "^4.7.1"
   },
   "dependencies": {
-    "cross-domain-utils": "^1.0.19"
+    "cross-domain-utils": "^2.0.0"
   }
 }

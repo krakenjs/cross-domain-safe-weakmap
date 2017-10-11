@@ -718,7 +718,8 @@
                 if (frame) {
                     return frame;
                 }
-                return findChildFrameByName(getTop(win), name);
+                var top = getTop(win) || win;
+                return findChildFrameByName(top, name);
             }
             function isParent(win, frame) {
                 var frameParent = getParent(frame);
@@ -835,13 +836,15 @@
                         }
                     }
                 }
+                return false;
             }
             function getDistanceFromTop() {
                 var win = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window;
                 var distance = 0;
-                while (win) {
-                    win = getParent(win);
-                    if (win) {
+                var parent = win;
+                while (parent) {
+                    parent = getParent(parent);
+                    if (parent) {
                         distance += 1;
                     }
                 }
@@ -849,18 +852,22 @@
             }
             function getNthParent(win) {
                 var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+                var parent = win;
                 for (var i = 0; i < n; i++) {
-                    win = getParent(win);
+                    if (!parent) {
+                        return;
+                    }
+                    parent = getParent(parent);
                 }
-                return win;
+                return parent;
             }
             function getNthParentFromTop(win) {
                 var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
                 return getNthParent(win, getDistanceFromTop(win) - n);
             }
             function isSameTopWindow(win1, win2) {
-                var top1 = getTop(win1);
-                var top2 = getTop(win2);
+                var top1 = getTop(win1) || win1;
+                var top2 = getTop(win2) || win2;
                 try {
                     if (top1 && top2) {
                         if (top1 === top2) {
@@ -882,6 +889,7 @@
                 if (opener2 && anyMatch(getAllFramesInWindow(opener2), allFrames1)) {
                     return false;
                 }
+                return false;
             }
             function matchDomain(pattern, origin) {
                 if (typeof pattern === "string") {
@@ -957,6 +965,15 @@
             function isWindow(obj) {
                 try {
                     if (obj === window) {
+                        return true;
+                    }
+                } catch (err) {
+                    if (err && err.message === IE_WIN_ACCESS_ERROR) {
+                        return true;
+                    }
+                }
+                try {
+                    if (Object.prototype.toString.call(obj) === "[object Window]") {
                         return true;
                     }
                 } catch (err) {

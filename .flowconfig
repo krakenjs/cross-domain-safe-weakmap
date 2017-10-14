@@ -2,8 +2,11 @@
 .*/node_modules/gulp-flowtype
 .*/node_modules/babel-plugin-flow-runtime
 .*/node_modules/flow-runtime
+.*/node_modules/cross-domain-utils/dist
+.*/node_modules/cross-domain-utils/test
 [include]
 [libs]
+src/types.js
 flow-typed
 [options]
 module.name_mapper='^src\(.*\)$' -> '<PROJECT_ROOT>/src/\1'

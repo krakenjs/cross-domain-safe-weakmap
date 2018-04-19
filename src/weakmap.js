@@ -17,7 +17,9 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
     constructor() {
         counter += 1;
-        this.name = `__weakmap_${Math.random() * 1e9 >>> 0}__${counter}`; // eslint-disable-line
+
+        // eslint-disable-next-line no-bitwise
+        this.name = `__weakmap_${ Math.random() * 1e9 >>> 0 }__${ counter }`;
 
         if (hasNativeWeakMap()) {
             try {
@@ -113,7 +115,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
                 entry[1] = value;
             } else {
                 defineProperty(key, name, {
-                    value: [ key, value ],
+                    value:    [ key, value ],
                     writable: true
                 });
             }
@@ -199,7 +201,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
         }
     }
 
-    has(key : K) {
+    has(key : K) : boolean {
 
         if (!key) {
             throw new Error(`WeakMap expected key`);

@@ -1,6 +1,6 @@
 /* @flow */
 
-export function hasNativeWeakMap() {
+export function hasNativeWeakMap() : boolean {
 
     if (!window.WeakMap) {
         return false;

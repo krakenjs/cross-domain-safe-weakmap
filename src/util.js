@@ -1,6 +1,6 @@
 /* @flow */
 
-export function safeIndexOf<T>(collection : Array<T>, item : T) {
+export function safeIndexOf<T>(collection : Array<T>, item : T) : number {
     for (let i = 0; i < collection.length; i++) {
 
         try {
@@ -15,6 +15,7 @@ export function safeIndexOf<T>(collection : Array<T>, item : T) {
     return -1;
 }
 
+// eslint-disable-next-line no-unused-vars
 export function noop(...args : Array<mixed>) {
     // pass
 }

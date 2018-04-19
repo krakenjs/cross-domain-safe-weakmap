@@ -1,6 +1,7 @@
 /* @flow */
+/* eslint max-lines: 0 */
 
-import { WeakMap } from 'src/interface';
+import { WeakMap } from '../../src';
 
 function getWindow() : Object {
     let win = {};
@@ -24,7 +25,7 @@ describe('weakmap standard cases', () => {
         let result = map.get(obj);
 
         if (result !== val) {
-            throw new Error(`Expected ${result || ''} to be '${val}'`);
+            throw new Error(`Expected ${ result || '' } to be '${ val }'`);
         }
     });
 
@@ -54,7 +55,7 @@ describe('weakmap standard cases', () => {
         let result = map.get(obj);
 
         if (result !== val2) {
-            throw new Error(`Expected ${result || ''} to be '${val2}'`);
+            throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
         }
     });
 
@@ -69,7 +70,7 @@ describe('weakmap standard cases', () => {
         let result = map.has(obj);
 
         if (!result) {
-            throw new Error(`Expected ${result.toString()} to be true`);
+            throw new Error(`Expected ${ result.toString() } to be true`);
         }
     });
 
@@ -81,7 +82,7 @@ describe('weakmap standard cases', () => {
         let result = map.has(obj);
 
         if (result) {
-            throw new Error(`Expected ${result.toString()} to be false`);
+            throw new Error(`Expected ${ result.toString() } to be false`);
         }
     });
 
@@ -97,7 +98,7 @@ describe('weakmap standard cases', () => {
         let result = map.has(obj);
 
         if (result) {
-            throw new Error(`Expected ${result.toString()} to be false`);
+            throw new Error(`Expected ${ result.toString() } to be false`);
         }
     });
 });
@@ -117,7 +118,7 @@ describe('weakmap cross-origin cases', () => {
         let result = map.get(obj);
 
         if (result !== val) {
-            throw new Error(`Expected ${result || ''} to be '${val}'`);
+            throw new Error(`Expected ${ result || '' } to be '${ val }'`);
         }
     });
 
@@ -146,7 +147,7 @@ describe('weakmap cross-origin cases', () => {
         let result = map.get(obj);
 
         if (result !== val2) {
-            throw new Error(`Expected ${result || ''} to be '${val2}'`);
+            throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
         }
     });
 
@@ -161,7 +162,7 @@ describe('weakmap cross-origin cases', () => {
         let result = map.has(obj);
 
         if (!result) {
-            throw new Error(`Expected ${result.toString()} to be true`);
+            throw new Error(`Expected ${ result.toString() } to be true`);
         }
     });
 
@@ -173,7 +174,7 @@ describe('weakmap cross-origin cases', () => {
         let result = map.has(obj);
 
         if (result) {
-            throw new Error(`Expected ${result.toString()} to be false`);
+            throw new Error(`Expected ${ result.toString() } to be false`);
         }
     });
 
@@ -189,7 +190,7 @@ describe('weakmap cross-origin cases', () => {
         let result = map.has(obj);
 
         if (result) {
-            throw new Error(`Expected ${result.toString()} to be false`);
+            throw new Error(`Expected ${ result.toString() } to be false`);
         }
     });
 });
@@ -201,7 +202,7 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
     // $FlowFixMe
     Object.defineProperty(win, 'self', {
         get() {
-            throw new Error("Rargh can't do that I'm IE ph34r me"); // eslint-disable-line
+            throw new Error('Rargh can\'t do that I\'m IE ph34r me');
         }
     });
 
@@ -216,7 +217,7 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
         let result = map.get(obj);
 
         if (result !== val) {
-            throw new Error(`Expected ${result || ''} to be '${val}'`);
+            throw new Error(`Expected ${ result || '' } to be '${ val }'`);
         }
     });
 
@@ -245,7 +246,7 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
         let result = map.get(obj);
 
         if (result !== val2) {
-            throw new Error(`Expected ${result || ''} to be '${val2}'`);
+            throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
         }
     });
 
@@ -260,7 +261,7 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
         let result = map.has(obj);
 
         if (!result) {
-            throw new Error(`Expected ${result.toString()} to be true`);
+            throw new Error(`Expected ${ result.toString() } to be true`);
         }
     });
 
@@ -272,7 +273,7 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
         let result = map.has(obj);
 
         if (result) {
-            throw new Error(`Expected ${result.toString()} to be false`);
+            throw new Error(`Expected ${ result.toString() } to be false`);
         }
     });
 
@@ -288,7 +289,7 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
         let result = map.has(obj);
 
         if (result) {
-            throw new Error(`Expected ${result.toString()} to be false`);
+            throw new Error(`Expected ${ result.toString() } to be false`);
         }
     });
 });
@@ -310,7 +311,7 @@ describe('weakmap standard cases with no native WeakMap', () => {
         let result = map.get(obj);
 
         if (result !== val) {
-            throw new Error(`Expected ${result || ''} to be '${val}'`);
+            throw new Error(`Expected ${ result || '' } to be '${ val }'`);
         }
     });
 
@@ -348,7 +349,7 @@ describe('weakmap standard cases with no native WeakMap', () => {
         let result = map.get(obj);
 
         if (result !== val2) {
-            throw new Error(`Expected ${result || ''} to be '${val2}'`);
+            throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
         }
     });
 
@@ -367,7 +368,7 @@ describe('weakmap standard cases with no native WeakMap', () => {
         let result = map.has(obj);
 
         if (!result) {
-            throw new Error(`Expected ${result.toString()} to be true`);
+            throw new Error(`Expected ${ result.toString() } to be true`);
         }
     });
 
@@ -383,7 +384,7 @@ describe('weakmap standard cases with no native WeakMap', () => {
         let result = map.has(obj);
 
         if (result) {
-            throw new Error(`Expected ${result.toString()} to be false`);
+            throw new Error(`Expected ${ result.toString() } to be false`);
         }
     });
 
@@ -403,7 +404,7 @@ describe('weakmap standard cases with no native WeakMap', () => {
         let result = map.has(obj);
 
         if (result) {
-            throw new Error(`Expected ${result.toString()} to be false`);
+            throw new Error(`Expected ${ result.toString() } to be false`);
         }
     });
 });
@@ -427,7 +428,7 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
         let result = map.get(obj);
 
         if (result !== val) {
-            throw new Error(`Expected ${result || ''} to be '${val}'`);
+            throw new Error(`Expected ${ result || '' } to be '${ val }'`);
         }
     });
 
@@ -464,7 +465,7 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
         let result = map.get(obj);
 
         if (result !== val2) {
-            throw new Error(`Expected ${result || ''} to be '${val2}'`);
+            throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
         }
     });
 
@@ -483,7 +484,7 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
         let result = map.has(obj);
 
         if (!result) {
-            throw new Error(`Expected ${result.toString()} to be true`);
+            throw new Error(`Expected ${ result.toString() } to be true`);
         }
     });
 
@@ -499,7 +500,7 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
         let result = map.has(obj);
 
         if (result) {
-            throw new Error(`Expected ${result.toString()} to be false`);
+            throw new Error(`Expected ${ result.toString() } to be false`);
         }
     });
 
@@ -519,7 +520,7 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
         let result = map.has(obj);
 
         if (result) {
-            throw new Error(`Expected ${result.toString()} to be false`);
+            throw new Error(`Expected ${ result.toString() } to be false`);
         }
     });
 });

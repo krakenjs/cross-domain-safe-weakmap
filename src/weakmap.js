@@ -235,4 +235,15 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             return false;
         }
     }
+
+    getOrSet(key : K, getter : () => V) : V {
+        if (this.has(key)) {
+            // $FlowFixMe
+            return this.get(key);
+        }
+
+        let value = getter();
+        this.set(key, value);
+        return value;
+    }
 }

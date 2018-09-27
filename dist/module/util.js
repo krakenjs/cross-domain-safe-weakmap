@@ -1,11 +1,4 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.safeIndexOf = safeIndexOf;
-exports.noop = noop;
-function safeIndexOf(collection, item) {
+export function safeIndexOf(collection, item) {
     for (var i = 0; i < collection.length; i++) {
 
         try {
@@ -21,6 +14,6 @@ function safeIndexOf(collection, item) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function noop() {
+export function noop() {
     // pass
 }

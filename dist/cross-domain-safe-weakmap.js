@@ -2,6 +2,7 @@
     "object" == typeof exports && "object" == typeof module ? module.exports = factory() : "function" == typeof define && define.amd ? define("xdsweakmap", [], factory) : "object" == typeof exports ? exports.xdsweakmap = factory() : root.xdsweakmap = factory();
 }("undefined" != typeof self ? self : this, function() {
     return function(modules) {
+        var installedModules = {};
         function __webpack_require__(moduleId) {
             if (installedModules[moduleId]) return installedModules[moduleId].exports;
             var module = installedModules[moduleId] = {
@@ -13,7 +14,6 @@
             module.l = !0;
             return module.exports;
         }
-        var installedModules = {};
         __webpack_require__.m = modules;
         __webpack_require__.c = installedModules;
         __webpack_require__.d = function(exports, name, getter) {
@@ -38,212 +38,22 @@
         __webpack_require__.p = "";
         return __webpack_require__(__webpack_require__.s = "./src/index.js");
     }({
-        "./node_modules/cross-domain-utils/src/index.js": function(module, exports, __webpack_require__) {
+        "./node_modules/cross-domain-utils/src/index.js": function(module, __webpack_exports__, __webpack_require__) {
             "use strict";
-            function isFileProtocol() {
-                return (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : window).location.protocol === CONSTANTS.FILE_PROTOCOL;
-            }
-            function isAboutProtocol() {
-                return (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : window).location.protocol === CONSTANTS.ABOUT_PROTOCOL;
-            }
-            function getParent(win) {
-                if (win) try {
-                    if (win.parent && win.parent !== win) return win.parent;
-                } catch (err) {}
-            }
-            function getOpener(win) {
-                if (win && !getParent(win)) try {
-                    return win.opener;
-                } catch (err) {}
-            }
-            function canReadFromWindow(win) {
-                try {
-                    (0, _util.noop)(win && win.location && win.location.href);
-                    return !0;
-                } catch (err) {}
-                return !1;
-            }
-            function getActualDomain(win) {
-                var location = win.location;
-                if (!location) throw new Error("Can not read window location");
-                var protocol = location.protocol;
-                if (!protocol) throw new Error("Can not read window protocol");
-                if (protocol === CONSTANTS.FILE_PROTOCOL) return CONSTANTS.FILE_PROTOCOL + "//";
-                if (protocol === CONSTANTS.ABOUT_PROTOCOL) {
-                    var parent = getParent(win);
-                    return parent && canReadFromWindow(win) ? getActualDomain(parent) : CONSTANTS.ABOUT_PROTOCOL + "//";
-                }
-                var host = location.host;
-                if (!host) throw new Error("Can not read window host");
-                return protocol + "//" + host;
-            }
-            function getDomain(win) {
-                win = win || window;
-                var domain = getActualDomain(win);
-                return domain && win.mockDomain && 0 === win.mockDomain.indexOf(CONSTANTS.MOCK_PROTOCOL) ? win.mockDomain : domain;
-            }
-            function isBlankDomain(win) {
-                try {
-                    if (!win.location.href) return !0;
-                    if ("about:blank" === win.location.href) return !0;
-                } catch (err) {}
-                return !1;
-            }
-            function isActuallySameDomain(win) {
-                try {
-                    if (win === window) return !0;
-                } catch (err) {}
-                try {
-                    var desc = Object.getOwnPropertyDescriptor(win, "location");
-                    if (desc && !1 === desc.enumerable) return !1;
-                } catch (err) {}
-                try {
-                    if (isAboutProtocol(win) && canReadFromWindow(win)) return !0;
-                } catch (err) {}
-                try {
-                    if (getActualDomain(win) === getActualDomain(window)) return !0;
-                } catch (err) {}
-                return !1;
-            }
-            function isSameDomain(win) {
-                if (!isActuallySameDomain(win)) return !1;
-                try {
-                    if (win === window) return !0;
-                    if (isAboutProtocol(win) && canReadFromWindow(win)) return !0;
-                    if (getDomain(window) === getDomain(win)) return !0;
-                } catch (err) {}
-                return !1;
-            }
-            function getParents(win) {
-                var result = [];
-                try {
-                    for (;win.parent !== win; ) {
-                        result.push(win.parent);
-                        win = win.parent;
-                    }
-                } catch (err) {}
-                return result;
-            }
-            function isAncestorParent(parent, child) {
-                if (!parent || !child) return !1;
-                var childParent = getParent(child);
-                return childParent ? childParent === parent : -1 !== getParents(child).indexOf(parent);
-            }
-            function getFrames(win) {
-                var result = [], frames = void 0;
-                try {
-                    frames = win.frames;
-                } catch (err) {
-                    frames = win;
-                }
-                var len = void 0;
-                try {
-                    len = frames.length;
-                } catch (err) {}
-                if (0 === len) return result;
-                if (len) {
-                    for (var i = 0; i < len; i++) {
-                        var frame = void 0;
-                        try {
-                            frame = frames[i];
-                        } catch (err) {
-                            continue;
-                        }
-                        result.push(frame);
-                    }
-                    return result;
-                }
-                for (var _i = 0; _i < 100; _i++) {
-                    var _frame = void 0;
-                    try {
-                        _frame = frames[_i];
-                    } catch (err) {
-                        return result;
-                    }
-                    if (!_frame) return result;
-                    result.push(_frame);
-                }
-                return result;
-            }
-            function getAllChildFrames(win) {
-                for (var result = [], _iterator = getFrames(win), _isArray = Array.isArray(_iterator), _i2 = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator](); ;) {
-                    var _ref;
-                    if (_isArray) {
-                        if (_i2 >= _iterator.length) break;
-                        _ref = _iterator[_i2++];
-                    } else {
-                        _i2 = _iterator.next();
-                        if (_i2.done) break;
-                        _ref = _i2.value;
-                    }
-                    var frame = _ref;
-                    result.push(frame);
-                    for (var _iterator2 = getAllChildFrames(frame), _isArray2 = Array.isArray(_iterator2), _i3 = 0, _iterator2 = _isArray2 ? _iterator2 : _iterator2[Symbol.iterator](); ;) {
-                        var _ref2;
-                        if (_isArray2) {
-                            if (_i3 >= _iterator2.length) break;
-                            _ref2 = _iterator2[_i3++];
-                        } else {
-                            _i3 = _iterator2.next();
-                            if (_i3.done) break;
-                            _ref2 = _i3.value;
-                        }
-                        var childFrame = _ref2;
-                        result.push(childFrame);
-                    }
-                }
-                return result;
-            }
-            function getTop(win) {
-                if (win) {
-                    try {
-                        if (win.top) return win.top;
-                    } catch (err) {}
-                    if (getParent(win) === win) return win;
-                    try {
-                        if (isAncestorParent(window, win) && window.top) return window.top;
-                    } catch (err) {}
-                    try {
-                        if (isAncestorParent(win, window) && window.top) return window.top;
-                    } catch (err) {}
-                    for (var _iterator3 = getAllChildFrames(win), _isArray3 = Array.isArray(_iterator3), _i4 = 0, _iterator3 = _isArray3 ? _iterator3 : _iterator3[Symbol.iterator](); ;) {
-                        var _ref3;
-                        if (_isArray3) {
-                            if (_i4 >= _iterator3.length) break;
-                            _ref3 = _iterator3[_i4++];
-                        } else {
-                            _i4 = _iterator3.next();
-                            if (_i4.done) break;
-                            _ref3 = _i4.value;
-                        }
-                        var frame = _ref3;
-                        try {
-                            if (frame.top) return frame.top;
-                        } catch (err) {}
-                        if (getParent(frame) === frame) return frame;
-                    }
-                }
-            }
-            function getAllFramesInWindow(win) {
-                var top = getTop(win);
-                return getAllChildFrames(top).concat(top);
-            }
-            function isTop(win) {
-                return win === getTop(win);
-            }
-            function isFrameWindowClosed(frame) {
-                if (!frame.contentWindow) return !0;
-                if (!frame.parentNode) return !0;
-                var doc = frame.ownerDocument;
-                return !(!doc || !doc.body || doc.body.contains(frame));
-            }
-            function safeIndexOf(collection, item) {
-                for (var i = 0; i < collection.length; i++) try {
-                    if (collection[i] === item) return i;
-                } catch (err) {}
-                return -1;
-            }
-            function isWindowClosed(win) {
+            var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__("./node_modules/cross-domain-utils/src/utils.js");
+            __webpack_require__.d(__webpack_exports__, "isWindow", function() {
+                return __WEBPACK_IMPORTED_MODULE_0__utils__.a;
+            });
+            __webpack_require__.d(__webpack_exports__, "isWindowClosed", function() {
+                return __WEBPACK_IMPORTED_MODULE_0__utils__.b;
+            });
+            var __WEBPACK_IMPORTED_MODULE_1__types__ = __webpack_require__("./node_modules/cross-domain-utils/src/types.js");
+            __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__types__);
+        },
+        "./node_modules/cross-domain-utils/src/types.js": function(module, exports) {},
+        "./node_modules/cross-domain-utils/src/utils.js": function(module, __webpack_exports__, __webpack_require__) {
+            "use strict";
+            __webpack_exports__.b = function(win) {
                 var allowMock = !(arguments.length > 1 && void 0 !== arguments[1]) || arguments[1];
                 try {
                     if (win === window) return !1;
@@ -260,244 +70,53 @@
                 } catch (err) {
                     return !err || err.message !== IE_WIN_ACCESS_ERROR;
                 }
-                if (allowMock && isSameDomain(win)) try {
+                if (allowMock && function(win) {
+                    if (!function(win) {
+                        try {
+                            if (win === window) return !0;
+                        } catch (err) {}
+                        try {
+                            var desc = Object.getOwnPropertyDescriptor(win, "location");
+                            if (desc && !1 === desc.enumerable) return !1;
+                        } catch (err) {}
+                        try {
+                            if (isAboutProtocol(win) && canReadFromWindow(win)) return !0;
+                        } catch (err) {}
+                        try {
+                            if (getActualDomain(win) === getActualDomain(window)) return !0;
+                        } catch (err) {}
+                        return !1;
+                    }(win)) return !1;
+                    try {
+                        if (win === window) return !0;
+                        if (isAboutProtocol(win) && canReadFromWindow(win)) return !0;
+                        if (getDomain(window) === getDomain(win)) return !0;
+                    } catch (err) {}
+                    return !1;
+                }(win)) try {
                     if (win.mockclosed) return !0;
                 } catch (err) {}
                 try {
                     if (!win.parent || !win.top) return !0;
                 } catch (err) {}
-                try {
-                    (0, _util.noop)(win === win);
-                } catch (err) {
-                    return !0;
-                }
-                var iframeIndex = safeIndexOf(iframeWindows, win);
+                var iframeIndex = function(collection, item) {
+                    for (var i = 0; i < collection.length; i++) try {
+                        if (collection[i] === item) return i;
+                    } catch (err) {}
+                    return -1;
+                }(iframeWindows, win);
                 if (-1 !== iframeIndex) {
                     var frame = iframeFrames[iframeIndex];
-                    if (frame && isFrameWindowClosed(frame)) return !0;
+                    if (frame && function(frame) {
+                        if (!frame.contentWindow) return !0;
+                        if (!frame.parentNode) return !0;
+                        var doc = frame.ownerDocument;
+                        return !(!doc || !doc.body || doc.body.contains(frame));
+                    }(frame)) return !0;
                 }
                 return !1;
-            }
-            function cleanIframes() {
-                for (var i = 0; i < iframeFrames.length; i++) if (isFrameWindowClosed(iframeFrames[i])) {
-                    iframeFrames.splice(i, 1);
-                    iframeWindows.splice(i, 1);
-                }
-                for (var _i5 = 0; _i5 < iframeWindows.length; _i5++) if (isWindowClosed(iframeWindows[_i5])) {
-                    iframeFrames.splice(_i5, 1);
-                    iframeWindows.splice(_i5, 1);
-                }
-            }
-            function linkFrameWindow(frame) {
-                cleanIframes();
-                if (frame && frame.contentWindow) try {
-                    iframeWindows.push(frame.contentWindow);
-                    iframeFrames.push(frame);
-                } catch (err) {}
-            }
-            function getUserAgent(win) {
-                win = win || window;
-                return win.navigator.mockUserAgent || win.navigator.userAgent;
-            }
-            function getFrameByName(win, name) {
-                for (var winFrames = getFrames(win), _iterator4 = winFrames, _isArray4 = Array.isArray(_iterator4), _i6 = 0, _iterator4 = _isArray4 ? _iterator4 : _iterator4[Symbol.iterator](); ;) {
-                    var _ref4;
-                    if (_isArray4) {
-                        if (_i6 >= _iterator4.length) break;
-                        _ref4 = _iterator4[_i6++];
-                    } else {
-                        _i6 = _iterator4.next();
-                        if (_i6.done) break;
-                        _ref4 = _i6.value;
-                    }
-                    var childFrame = _ref4;
-                    try {
-                        if (isSameDomain(childFrame) && childFrame.name === name && -1 !== winFrames.indexOf(childFrame)) return childFrame;
-                    } catch (err) {}
-                }
-                try {
-                    if (-1 !== winFrames.indexOf(win.frames[name])) return win.frames[name];
-                } catch (err) {}
-                try {
-                    if (-1 !== winFrames.indexOf(win[name])) return win[name];
-                } catch (err) {}
-            }
-            function findChildFrameByName(win, name) {
-                var frame = getFrameByName(win, name);
-                if (frame) return frame;
-                for (var _iterator5 = getFrames(win), _isArray5 = Array.isArray(_iterator5), _i7 = 0, _iterator5 = _isArray5 ? _iterator5 : _iterator5[Symbol.iterator](); ;) {
-                    var _ref5;
-                    if (_isArray5) {
-                        if (_i7 >= _iterator5.length) break;
-                        _ref5 = _iterator5[_i7++];
-                    } else {
-                        _i7 = _iterator5.next();
-                        if (_i7.done) break;
-                        _ref5 = _i7.value;
-                    }
-                    var childFrame = _ref5, namedFrame = findChildFrameByName(childFrame, name);
-                    if (namedFrame) return namedFrame;
-                }
-            }
-            function findFrameByName(win, name) {
-                var frame = void 0;
-                frame = getFrameByName(win, name);
-                return frame || findChildFrameByName(getTop(win) || win, name);
-            }
-            function isParent(win, frame) {
-                var frameParent = getParent(frame);
-                if (frameParent) return frameParent === win;
-                for (var _iterator6 = getFrames(win), _isArray6 = Array.isArray(_iterator6), _i8 = 0, _iterator6 = _isArray6 ? _iterator6 : _iterator6[Symbol.iterator](); ;) {
-                    var _ref6;
-                    if (_isArray6) {
-                        if (_i8 >= _iterator6.length) break;
-                        _ref6 = _iterator6[_i8++];
-                    } else {
-                        _i8 = _iterator6.next();
-                        if (_i8.done) break;
-                        _ref6 = _i8.value;
-                    }
-                    if (_ref6 === frame) return !0;
-                }
-                return !1;
-            }
-            function isOpener(parent, child) {
-                return parent === getOpener(child);
-            }
-            function getAncestor(win) {
-                win = win || window;
-                var opener = getOpener(win);
-                if (opener) return opener;
-                var parent = getParent(win);
-                return parent || void 0;
-            }
-            function getAncestors(win) {
-                for (var results = [], ancestor = win; ancestor; ) {
-                    ancestor = getAncestor(ancestor);
-                    ancestor && results.push(ancestor);
-                }
-                return results;
-            }
-            function isAncestor(parent, child) {
-                var actualParent = getAncestor(child);
-                if (actualParent) return actualParent === parent;
-                if (child === parent) return !1;
-                if (getTop(child) === child) return !1;
-                for (var _iterator7 = getFrames(parent), _isArray7 = Array.isArray(_iterator7), _i9 = 0, _iterator7 = _isArray7 ? _iterator7 : _iterator7[Symbol.iterator](); ;) {
-                    var _ref7;
-                    if (_isArray7) {
-                        if (_i9 >= _iterator7.length) break;
-                        _ref7 = _iterator7[_i9++];
-                    } else {
-                        _i9 = _iterator7.next();
-                        if (_i9.done) break;
-                        _ref7 = _i9.value;
-                    }
-                    if (_ref7 === child) return !0;
-                }
-                return !1;
-            }
-            function isPopup() {
-                return Boolean(getOpener(window));
-            }
-            function isIframe() {
-                return Boolean(getParent(window));
-            }
-            function isFullpage() {
-                return Boolean(!isIframe() && !isPopup());
-            }
-            function anyMatch(collection1, collection2) {
-                for (var _iterator8 = collection1, _isArray8 = Array.isArray(_iterator8), _i10 = 0, _iterator8 = _isArray8 ? _iterator8 : _iterator8[Symbol.iterator](); ;) {
-                    var _ref8;
-                    if (_isArray8) {
-                        if (_i10 >= _iterator8.length) break;
-                        _ref8 = _iterator8[_i10++];
-                    } else {
-                        _i10 = _iterator8.next();
-                        if (_i10.done) break;
-                        _ref8 = _i10.value;
-                    }
-                    for (var item1 = _ref8, _iterator9 = collection2, _isArray9 = Array.isArray(_iterator9), _i11 = 0, _iterator9 = _isArray9 ? _iterator9 : _iterator9[Symbol.iterator](); ;) {
-                        var _ref9;
-                        if (_isArray9) {
-                            if (_i11 >= _iterator9.length) break;
-                            _ref9 = _iterator9[_i11++];
-                        } else {
-                            _i11 = _iterator9.next();
-                            if (_i11.done) break;
-                            _ref9 = _i11.value;
-                        }
-                        if (item1 === _ref9) return !0;
-                    }
-                }
-                return !1;
-            }
-            function getDistanceFromTop() {
-                for (var win = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : window, distance = 0, parent = win; parent; ) {
-                    parent = getParent(parent);
-                    parent && (distance += 1);
-                }
-                return distance;
-            }
-            function getNthParent(win) {
-                for (var n = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 1, parent = win, i = 0; i < n; i++) {
-                    if (!parent) return;
-                    parent = getParent(parent);
-                }
-                return parent;
-            }
-            function getNthParentFromTop(win) {
-                var n = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 1;
-                return getNthParent(win, getDistanceFromTop(win) - n);
-            }
-            function isSameTopWindow(win1, win2) {
-                var top1 = getTop(win1) || win1, top2 = getTop(win2) || win2;
-                try {
-                    if (top1 && top2) return top1 === top2;
-                } catch (err) {}
-                var allFrames1 = getAllFramesInWindow(win1), allFrames2 = getAllFramesInWindow(win2);
-                if (anyMatch(allFrames1, allFrames2)) return !0;
-                var opener1 = getOpener(top1), opener2 = getOpener(top2);
-                return (!opener1 || !anyMatch(getAllFramesInWindow(opener1), allFrames2)) && (opener2 && anyMatch(getAllFramesInWindow(opener2), allFrames1), 
-                !1);
-            }
-            function matchDomain(pattern, origin) {
-                if ("string" == typeof pattern) {
-                    if ("string" == typeof origin) return pattern === CONSTANTS.WILDCARD || origin === pattern;
-                    if ((0, _util.isRegex)(origin)) return !1;
-                    if (Array.isArray(origin)) return !1;
-                }
-                return (0, _util.isRegex)(pattern) ? (0, _util.isRegex)(origin) ? pattern.toString() === origin.toString() : !Array.isArray(origin) && Boolean(origin.match(pattern)) : !!Array.isArray(pattern) && (Array.isArray(origin) ? JSON.stringify(pattern) === JSON.stringify(origin) : !(0, 
-                _util.isRegex)(origin) && pattern.some(function(subpattern) {
-                    return matchDomain(subpattern, origin);
-                }));
-            }
-            function getDomainFromUrl(url) {
-                var domain = void 0;
-                if (!url.match(/^(https?|mock|file):\/\//)) return getDomain();
-                domain = url;
-                domain = domain.split("/").slice(0, 3).join("/");
-                return domain;
-            }
-            function onCloseWindow(win, callback) {
-                var delay = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 1e3, maxtime = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : 1 / 0, timeout = void 0;
-                !function check() {
-                    if (isWindowClosed(win)) {
-                        timeout && clearTimeout(timeout);
-                        return callback();
-                    }
-                    if (maxtime <= 0) clearTimeout(timeout); else {
-                        maxtime -= delay;
-                        timeout = setTimeout(check, delay);
-                    }
-                }();
-                return {
-                    cancel: function() {
-                        timeout && clearTimeout(timeout);
-                    }
-                };
-            }
-            function isWindow(obj) {
+            };
+            __webpack_exports__.a = function(obj) {
                 try {
                     if (obj === window) return !0;
                 } catch (err) {
@@ -529,298 +148,202 @@
                     if (err && err.message === IE_WIN_ACCESS_ERROR) return !0;
                 }
                 try {
-                    (0, _util.noop)(obj === obj);
-                } catch (err) {
-                    return !0;
-                }
-                try {
-                    (0, _util.noop)(obj && obj.__cross_domain_utils_window_check__);
+                    obj && obj.__cross_domain_utils_window_check__;
                 } catch (err) {
                     return !0;
                 }
                 return !1;
-            }
-            Object.defineProperty(exports, "__esModule", {
-                value: !0
-            });
-            exports.isFileProtocol = isFileProtocol;
-            exports.isAboutProtocol = isAboutProtocol;
-            exports.getParent = getParent;
-            exports.getOpener = getOpener;
-            exports.canReadFromWindow = canReadFromWindow;
-            exports.getActualDomain = getActualDomain;
-            exports.getDomain = getDomain;
-            exports.isBlankDomain = isBlankDomain;
-            exports.isActuallySameDomain = isActuallySameDomain;
-            exports.isSameDomain = isSameDomain;
-            exports.getParents = getParents;
-            exports.isAncestorParent = isAncestorParent;
-            exports.getFrames = getFrames;
-            exports.getAllChildFrames = getAllChildFrames;
-            exports.getTop = getTop;
-            exports.getAllFramesInWindow = getAllFramesInWindow;
-            exports.isTop = isTop;
-            exports.isFrameWindowClosed = isFrameWindowClosed;
-            exports.isWindowClosed = isWindowClosed;
-            exports.linkFrameWindow = linkFrameWindow;
-            exports.getUserAgent = getUserAgent;
-            exports.getFrameByName = getFrameByName;
-            exports.findChildFrameByName = findChildFrameByName;
-            exports.findFrameByName = findFrameByName;
-            exports.isParent = isParent;
-            exports.isOpener = isOpener;
-            exports.getAncestor = getAncestor;
-            exports.getAncestors = getAncestors;
-            exports.isAncestor = isAncestor;
-            exports.isPopup = isPopup;
-            exports.isIframe = isIframe;
-            exports.isFullpage = isFullpage;
-            exports.getDistanceFromTop = getDistanceFromTop;
-            exports.getNthParent = getNthParent;
-            exports.getNthParentFromTop = getNthParentFromTop;
-            exports.isSameTopWindow = isSameTopWindow;
-            exports.matchDomain = matchDomain;
-            exports.getDomainFromUrl = getDomainFromUrl;
-            exports.onCloseWindow = onCloseWindow;
-            exports.isWindow = isWindow;
-            var _util = __webpack_require__("./node_modules/cross-domain-utils/src/util.js"), CONSTANTS = {
+            };
+            var CONSTANTS = {
                 MOCK_PROTOCOL: "mock:",
                 FILE_PROTOCOL: "file:",
                 ABOUT_PROTOCOL: "about:",
                 WILDCARD: "*"
-            }, IE_WIN_ACCESS_ERROR = "Call was rejected by callee.\r\n", iframeWindows = [], iframeFrames = [];
-        },
-        "./node_modules/cross-domain-utils/src/util.js": function(module, exports, __webpack_require__) {
-            "use strict";
-            function isRegex(item) {
-                return "[object RegExp]" === Object.prototype.toString.call(item);
+            }, IE_WIN_ACCESS_ERROR = "Call was rejected by callee.\r\n";
+            function isAboutProtocol() {
+                return (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : window).location.protocol === CONSTANTS.ABOUT_PROTOCOL;
             }
-            function noop() {}
-            Object.defineProperty(exports, "__esModule", {
-                value: !0
-            });
-            exports.isRegex = isRegex;
-            exports.noop = noop;
-        },
-        "./src/index.js": function(module, exports, __webpack_require__) {
-            "use strict";
-            Object.defineProperty(exports, "__esModule", {
-                value: !0
-            });
-            var _interface = __webpack_require__("./src/interface.js");
-            Object.keys(_interface).forEach(function(key) {
-                "default" !== key && "__esModule" !== key && Object.defineProperty(exports, key, {
-                    enumerable: !0,
-                    get: function() {
-                        return _interface[key];
-                    }
-                });
-            });
-            var INTERFACE = function(obj) {
-                if (obj && obj.__esModule) return obj;
-                var newObj = {};
-                if (null != obj) for (var key in obj) Object.prototype.hasOwnProperty.call(obj, key) && (newObj[key] = obj[key]);
-                newObj.default = obj;
-                return newObj;
-            }(_interface);
-            exports.default = INTERFACE;
-        },
-        "./src/interface.js": function(module, exports, __webpack_require__) {
-            "use strict";
-            Object.defineProperty(exports, "__esModule", {
-                value: !0
-            });
-            var _weakmap = __webpack_require__("./src/weakmap.js");
-            Object.defineProperty(exports, "WeakMap", {
-                enumerable: !0,
-                get: function() {
-                    return _weakmap.CrossDomainSafeWeakMap;
-                }
-            });
-        },
-        "./src/native.js": function(module, exports, __webpack_require__) {
-            "use strict";
-            function hasNativeWeakMap() {
-                if (!window.WeakMap) return !1;
-                if (!window.Object.freeze) return !1;
+            function canReadFromWindow(win) {
                 try {
-                    var testWeakMap = new window.WeakMap(), testKey = {};
-                    window.Object.freeze(testKey);
-                    testWeakMap.set(testKey, "__testvalue__");
-                    return "__testvalue__" === testWeakMap.get(testKey);
-                } catch (err) {
-                    return !1;
-                }
+                    win && win.location && win.location.href;
+                    return !0;
+                } catch (err) {}
+                return !1;
             }
-            Object.defineProperty(exports, "__esModule", {
+            function getActualDomain(win) {
+                var location = (win = win || window).location;
+                if (!location) throw new Error("Can not read window location");
+                var protocol = location.protocol;
+                if (!protocol) throw new Error("Can not read window protocol");
+                if (protocol === CONSTANTS.FILE_PROTOCOL) return CONSTANTS.FILE_PROTOCOL + "//";
+                if (protocol === CONSTANTS.ABOUT_PROTOCOL) {
+                    var parent = function(win) {
+                        if (win) try {
+                            if (win.parent && win.parent !== win) return win.parent;
+                        } catch (err) {}
+                    }(win);
+                    return parent && canReadFromWindow(parent) ? getActualDomain(parent) : CONSTANTS.ABOUT_PROTOCOL + "//";
+                }
+                var host = location.host;
+                if (!host) throw new Error("Can not read window host");
+                return protocol + "//" + host;
+            }
+            function getDomain(win) {
+                var domain = getActualDomain(win = win || window);
+                return domain && win.mockDomain && 0 === win.mockDomain.indexOf(CONSTANTS.MOCK_PROTOCOL) ? win.mockDomain : domain;
+            }
+            var iframeWindows = [], iframeFrames = [];
+        },
+        "./src/index.js": function(module, __webpack_exports__, __webpack_require__) {
+            "use strict";
+            Object.defineProperty(__webpack_exports__, "__esModule", {
                 value: !0
             });
-            exports.hasNativeWeakMap = hasNativeWeakMap;
-        },
-        "./src/util.js": function(module, exports, __webpack_require__) {
-            "use strict";
+            var interface_namespaceObject = {};
+            __webpack_require__.d(interface_namespaceObject, "WeakMap", function() {
+                return weakmap_CrossDomainSafeWeakMap;
+            });
+            var src = __webpack_require__("./node_modules/cross-domain-utils/src/index.js");
             function safeIndexOf(collection, item) {
                 for (var i = 0; i < collection.length; i++) try {
                     if (collection[i] === item) return i;
                 } catch (err) {}
                 return -1;
             }
-            function noop() {}
-            Object.defineProperty(exports, "__esModule", {
-                value: !0
-            });
-            exports.safeIndexOf = safeIndexOf;
-            exports.noop = noop;
-        },
-        "./src/weakmap.js": function(module, exports, __webpack_require__) {
-            "use strict";
-            function _classCallCheck(instance, Constructor) {
-                if (!(instance instanceof Constructor)) throw new TypeError("Cannot call a class as a function");
-            }
-            Object.defineProperty(exports, "__esModule", {
-                value: !0
-            });
-            exports.CrossDomainSafeWeakMap = void 0;
-            var _createClass = function() {
-                function defineProperties(target, props) {
-                    for (var i = 0; i < props.length; i++) {
-                        var descriptor = props[i];
-                        descriptor.enumerable = descriptor.enumerable || !1;
-                        descriptor.configurable = !0;
-                        "value" in descriptor && (descriptor.writable = !0);
-                        Object.defineProperty(target, descriptor.key, descriptor);
-                    }
-                }
-                return function(Constructor, protoProps, staticProps) {
-                    protoProps && defineProperties(Constructor.prototype, protoProps);
-                    staticProps && defineProperties(Constructor, staticProps);
-                    return Constructor;
-                };
-            }(), _src = __webpack_require__("./node_modules/cross-domain-utils/src/index.js"), _native = __webpack_require__("./src/native.js"), _util = __webpack_require__("./src/util.js"), defineProperty = Object.defineProperty, counter = Date.now() % 1e9;
-            exports.CrossDomainSafeWeakMap = function() {
+            var defineProperty = Object.defineProperty, counter = Date.now() % 1e9, weakmap_CrossDomainSafeWeakMap = function() {
                 function CrossDomainSafeWeakMap() {
-                    _classCallCheck(this, CrossDomainSafeWeakMap);
+                    !function(instance, Constructor) {
+                        if (!(instance instanceof CrossDomainSafeWeakMap)) throw new TypeError("Cannot call a class as a function");
+                    }(this);
                     counter += 1;
                     this.name = "__weakmap_" + (1e9 * Math.random() >>> 0) + "__" + counter;
-                    if ((0, _native.hasNativeWeakMap)()) try {
+                    if (function() {
+                        if (!window.WeakMap) return !1;
+                        if (!window.Object.freeze) return !1;
+                        try {
+                            var testWeakMap = new window.WeakMap(), testKey = {};
+                            window.Object.freeze(testKey);
+                            testWeakMap.set(testKey, "__testvalue__");
+                            return "__testvalue__" === testWeakMap.get(testKey);
+                        } catch (err) {
+                            return !1;
+                        }
+                    }()) try {
                         this.weakmap = new window.WeakMap();
                     } catch (err) {}
                     this.keys = [];
                     this.values = [];
                 }
-                _createClass(CrossDomainSafeWeakMap, [ {
-                    key: "_cleanupClosedWindows",
-                    value: function() {
-                        for (var weakmap = this.weakmap, keys = this.keys, i = 0; i < keys.length; i++) {
-                            var value = keys[i];
-                            if ((0, _src.isWindow)(value) && (0, _src.isWindowClosed)(value)) {
-                                if (weakmap) try {
-                                    weakmap.delete(value);
-                                } catch (err) {}
-                                keys.splice(i, 1);
-                                this.values.splice(i, 1);
-                                i -= 1;
-                            }
+                CrossDomainSafeWeakMap.prototype._cleanupClosedWindows = function() {
+                    for (var weakmap = this.weakmap, keys = this.keys, i = 0; i < keys.length; i++) {
+                        var value = keys[i];
+                        if (Object(src.isWindow)(value) && Object(src.isWindowClosed)(value)) {
+                            if (weakmap) try {
+                                weakmap.delete(value);
+                            } catch (err) {}
+                            keys.splice(i, 1);
+                            this.values.splice(i, 1);
+                            i -= 1;
                         }
                     }
-                }, {
-                    key: "isSafeToReadWrite",
-                    value: function(key) {
-                        if ((0, _src.isWindow)(key)) return !1;
-                        try {
-                            (0, _util.noop)(key && key.self);
-                            (0, _util.noop)(key && key[this.name]);
-                        } catch (err) {
-                            return !1;
-                        }
-                        return !0;
+                };
+                CrossDomainSafeWeakMap.prototype.isSafeToReadWrite = function(key) {
+                    if (Object(src.isWindow)(key)) return !1;
+                    try {
+                        key && key.self;
+                        key && key[this.name];
+                    } catch (err) {
+                        return !1;
                     }
-                }, {
-                    key: "set",
-                    value: function(key, value) {
-                        if (!key) throw new Error("WeakMap expected key");
-                        var weakmap = this.weakmap;
-                        if (weakmap) try {
-                            weakmap.set(key, value);
-                        } catch (err) {
-                            delete this.weakmap;
-                        }
-                        if (this.isSafeToReadWrite(key)) {
-                            var name = this.name, entry = key[name];
-                            entry && entry[0] === key ? entry[1] = value : defineProperty(key, name, {
-                                value: [ key, value ],
-                                writable: !0
-                            });
-                        } else {
-                            this._cleanupClosedWindows();
-                            var keys = this.keys, values = this.values, index = (0, _util.safeIndexOf)(keys, key);
-                            if (-1 === index) {
-                                keys.push(key);
-                                values.push(value);
-                            } else values[index] = value;
-                        }
+                    return !0;
+                };
+                CrossDomainSafeWeakMap.prototype.set = function(key, value) {
+                    if (!key) throw new Error("WeakMap expected key");
+                    var weakmap = this.weakmap;
+                    if (weakmap) try {
+                        weakmap.set(key, value);
+                    } catch (err) {
+                        delete this.weakmap;
                     }
-                }, {
-                    key: "get",
-                    value: function(key) {
-                        if (!key) throw new Error("WeakMap expected key");
-                        var weakmap = this.weakmap;
-                        if (weakmap) try {
-                            if (weakmap.has(key)) return weakmap.get(key);
-                        } catch (err) {
-                            delete this.weakmap;
-                        }
-                        if (!this.isSafeToReadWrite(key)) {
-                            this._cleanupClosedWindows();
-                            var keys = this.keys, index = (0, _util.safeIndexOf)(keys, key);
-                            if (-1 === index) return;
-                            return this.values[index];
-                        }
-                        var entry = key[this.name];
-                        if (entry && entry[0] === key) return entry[1];
-                    }
-                }, {
-                    key: "delete",
-                    value: function(key) {
-                        if (!key) throw new Error("WeakMap expected key");
-                        var weakmap = this.weakmap;
-                        if (weakmap) try {
-                            weakmap.delete(key);
-                        } catch (err) {
-                            delete this.weakmap;
-                        }
-                        if (this.isSafeToReadWrite(key)) {
-                            var entry = key[this.name];
-                            entry && entry[0] === key && (entry[0] = entry[1] = void 0);
-                        } else {
-                            this._cleanupClosedWindows();
-                            var keys = this.keys, index = (0, _util.safeIndexOf)(keys, key);
-                            if (-1 !== index) {
-                                keys.splice(index, 1);
-                                this.values.splice(index, 1);
-                            }
-                        }
-                    }
-                }, {
-                    key: "has",
-                    value: function(key) {
-                        if (!key) throw new Error("WeakMap expected key");
-                        var weakmap = this.weakmap;
-                        if (weakmap) try {
-                            return weakmap.has(key);
-                        } catch (err) {
-                            delete this.weakmap;
-                        }
-                        if (this.isSafeToReadWrite(key)) {
-                            var entry = key[this.name];
-                            return !(!entry || entry[0] !== key);
-                        }
+                    if (this.isSafeToReadWrite(key)) {
+                        var name = this.name, entry = key[name];
+                        entry && entry[0] === key ? entry[1] = value : defineProperty(key, name, {
+                            value: [ key, value ],
+                            writable: !0
+                        });
+                    } else {
                         this._cleanupClosedWindows();
-                        return -1 !== (0, _util.safeIndexOf)(this.keys, key);
+                        var keys = this.keys, values = this.values, index = safeIndexOf(keys, key);
+                        if (-1 === index) {
+                            keys.push(key);
+                            values.push(value);
+                        } else values[index] = value;
                     }
-                } ]);
+                };
+                CrossDomainSafeWeakMap.prototype.get = function(key) {
+                    if (!key) throw new Error("WeakMap expected key");
+                    var weakmap = this.weakmap;
+                    if (weakmap) try {
+                        if (weakmap.has(key)) return weakmap.get(key);
+                    } catch (err) {
+                        delete this.weakmap;
+                    }
+                    if (!this.isSafeToReadWrite(key)) {
+                        this._cleanupClosedWindows();
+                        var index = safeIndexOf(this.keys, key);
+                        if (-1 === index) return;
+                        return this.values[index];
+                    }
+                    var entry = key[this.name];
+                    if (entry && entry[0] === key) return entry[1];
+                };
+                CrossDomainSafeWeakMap.prototype.delete = function(key) {
+                    if (!key) throw new Error("WeakMap expected key");
+                    var weakmap = this.weakmap;
+                    if (weakmap) try {
+                        weakmap.delete(key);
+                    } catch (err) {
+                        delete this.weakmap;
+                    }
+                    if (this.isSafeToReadWrite(key)) {
+                        var entry = key[this.name];
+                        entry && entry[0] === key && (entry[0] = entry[1] = void 0);
+                    } else {
+                        this._cleanupClosedWindows();
+                        var keys = this.keys, index = safeIndexOf(keys, key);
+                        if (-1 !== index) {
+                            keys.splice(index, 1);
+                            this.values.splice(index, 1);
+                        }
+                    }
+                };
+                CrossDomainSafeWeakMap.prototype.has = function(key) {
+                    if (!key) throw new Error("WeakMap expected key");
+                    var weakmap = this.weakmap;
+                    if (weakmap) try {
+                        return weakmap.has(key);
+                    } catch (err) {
+                        delete this.weakmap;
+                    }
+                    if (this.isSafeToReadWrite(key)) {
+                        var entry = key[this.name];
+                        return !(!entry || entry[0] !== key);
+                    }
+                    this._cleanupClosedWindows();
+                    return -1 !== safeIndexOf(this.keys, key);
+                };
+                CrossDomainSafeWeakMap.prototype.getOrSet = function(key, getter) {
+                    if (this.has(key)) return this.get(key);
+                    var value = getter();
+                    this.set(key, value);
+                    return value;
+                };
                 return CrossDomainSafeWeakMap;
             }();
+            __webpack_require__.d(__webpack_exports__, "WeakMap", function() {
+                return weakmap_CrossDomainSafeWeakMap;
+            });
+            __webpack_exports__.default = interface_namespaceObject;
         }
     });
 });

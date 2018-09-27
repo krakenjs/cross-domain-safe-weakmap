@@ -1,10 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.hasNativeWeakMap = hasNativeWeakMap;
-function hasNativeWeakMap() {
+export function hasNativeWeakMap() {
 
     if (!window.WeakMap) {
         return false;

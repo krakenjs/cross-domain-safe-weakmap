@@ -11,6 +11,7 @@ declare export class WeakMap<K: Object, V> {
   constructor(): void | void | void | void;
   delete(key: K): void | void | void | void;
   get(key: K): V | void;
+  getOrSet(key: K, getter: () => V): V;
   has(key: K): boolean;
   isSafeToReadWrite(key: K): boolean;
   set(key: K, value: V): void | void | void | void;

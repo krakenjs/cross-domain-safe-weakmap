@@ -1,20 +1,20 @@
 export function hasNativeWeakMap() {
 
-    if (!window.WeakMap) {
+    if (typeof WeakMap === 'undefined') {
         return false;
     }
 
-    if (!window.Object.freeze) {
+    if (typeof Object.freeze === 'undefined') {
         return false;
     }
 
     try {
 
-        var testWeakMap = new window.WeakMap();
+        var testWeakMap = new WeakMap();
         var testKey = {};
         var testValue = '__testvalue__';
 
-        window.Object.freeze(testKey);
+        Object.freeze(testKey);
 
         testWeakMap.set(testKey, testValue);
 

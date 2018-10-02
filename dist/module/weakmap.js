@@ -19,7 +19,7 @@ export var CrossDomainSafeWeakMap = function () {
 
         if (hasNativeWeakMap()) {
             try {
-                this.weakmap = new window.WeakMap();
+                this.weakmap = new WeakMap();
             } catch (err) {
                 // pass
             }

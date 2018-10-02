@@ -2,21 +2,21 @@
 
 export function hasNativeWeakMap() : boolean {
 
-    if (!window.WeakMap) {
+    if (typeof WeakMap === 'undefined') {
         return false;
     }
 
-    if (!window.Object.freeze) {
+    if (typeof Object.freeze === 'undefined') {
         return false;
     }
 
     try {
 
-        let testWeakMap = new window.WeakMap();
+        let testWeakMap = new WeakMap();
         let testKey = {};
         let testValue = '__testvalue__';
 
-        window.Object.freeze(testKey);
+        Object.freeze(testKey);
 
         testWeakMap.set(testKey, testValue);
 

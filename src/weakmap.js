@@ -23,7 +23,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
         if (hasNativeWeakMap()) {
             try {
-                this.weakmap = new window.WeakMap();
+                this.weakmap = new WeakMap();
             } catch (err) {
                 // pass
             }

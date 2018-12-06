@@ -38,6 +38,20 @@
         __webpack_require__.p = "";
         return __webpack_require__(__webpack_require__.s = "./src/index.js");
     }({
+        "./node_modules/cross-domain-utils/src/constants.js": function(module, __webpack_exports__, __webpack_require__) {
+            "use strict";
+            __webpack_require__.d(__webpack_exports__, "a", function() {
+                return PROTOCOL;
+            });
+            __webpack_require__.d(__webpack_exports__, "b", function() {
+                return WILDCARD;
+            });
+            var PROTOCOL = {
+                MOCK: "mock:",
+                FILE: "file:",
+                ABOUT: "about:"
+            }, WILDCARD = "*";
+        },
         "./node_modules/cross-domain-utils/src/index.js": function(module, __webpack_exports__, __webpack_require__) {
             "use strict";
             var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__("./node_modules/cross-domain-utils/src/utils.js");
@@ -48,11 +62,12 @@
                 return __WEBPACK_IMPORTED_MODULE_0__utils__.b;
             });
             var __WEBPACK_IMPORTED_MODULE_1__types__ = __webpack_require__("./node_modules/cross-domain-utils/src/types.js");
-            __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__types__);
+            __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__types__), __webpack_require__("./node_modules/cross-domain-utils/src/constants.js");
         },
         "./node_modules/cross-domain-utils/src/types.js": function(module, exports) {},
         "./node_modules/cross-domain-utils/src/utils.js": function(module, __webpack_exports__, __webpack_require__) {
             "use strict";
+            var constants = __webpack_require__("./node_modules/cross-domain-utils/src/constants.js");
             __webpack_exports__.b = function(win) {
                 var allowMock = !(arguments.length > 1 && void 0 !== arguments[1]) || arguments[1];
                 try {
@@ -111,7 +126,7 @@
                         if (!frame.contentWindow) return !0;
                         if (!frame.parentNode) return !0;
                         var doc = frame.ownerDocument;
-                        return !(!doc || !doc.body || doc.body.contains(frame));
+                        return !(!doc || !doc.documentElement || doc.documentElement.contains(frame));
                     }(frame)) return !0;
                 }
                 return !1;
@@ -154,14 +169,9 @@
                 }
                 return !1;
             };
-            var CONSTANTS = {
-                MOCK_PROTOCOL: "mock:",
-                FILE_PROTOCOL: "file:",
-                ABOUT_PROTOCOL: "about:",
-                WILDCARD: "*"
-            }, IE_WIN_ACCESS_ERROR = "Call was rejected by callee.\r\n";
+            var IE_WIN_ACCESS_ERROR = "Call was rejected by callee.\r\n";
             function isAboutProtocol() {
-                return (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : window).location.protocol === CONSTANTS.ABOUT_PROTOCOL;
+                return (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : window).location.protocol === constants.a.ABOUT;
             }
             function canReadFromWindow(win) {
                 try {
@@ -175,14 +185,14 @@
                 if (!location) throw new Error("Can not read window location");
                 var protocol = location.protocol;
                 if (!protocol) throw new Error("Can not read window protocol");
-                if (protocol === CONSTANTS.FILE_PROTOCOL) return CONSTANTS.FILE_PROTOCOL + "//";
-                if (protocol === CONSTANTS.ABOUT_PROTOCOL) {
+                if (protocol === constants.a.FILE) return constants.a.FILE + "//";
+                if (protocol === constants.a.ABOUT) {
                     var parent = function(win) {
                         if (win) try {
                             if (win.parent && win.parent !== win) return win.parent;
                         } catch (err) {}
                     }(win);
-                    return parent && canReadFromWindow(parent) ? getActualDomain(parent) : CONSTANTS.ABOUT_PROTOCOL + "//";
+                    return parent && canReadFromWindow(parent) ? getActualDomain(parent) : constants.a.ABOUT + "//";
                 }
                 var host = location.host;
                 if (!host) throw new Error("Can not read window host");
@@ -190,7 +200,7 @@
             }
             function getDomain(win) {
                 var domain = getActualDomain(win = win || window);
-                return domain && win.mockDomain && 0 === win.mockDomain.indexOf(CONSTANTS.MOCK_PROTOCOL) ? win.mockDomain : domain;
+                return domain && win.mockDomain && 0 === win.mockDomain.indexOf(constants.a.MOCK) ? win.mockDomain : domain;
             }
             var iframeWindows = [], iframeFrames = [];
         },
@@ -321,7 +331,7 @@
                     if (!key) throw new Error("WeakMap expected key");
                     var weakmap = this.weakmap;
                     if (weakmap) try {
-                        return weakmap.has(key);
+                        if (weakmap.has(key)) return !0;
                     } catch (err) {
                         delete this.weakmap;
                     }
@@ -347,5 +357,4 @@
         }
     });
 });
-//# sourceMappingURL=cross-domain-safe-weakmap.js.map
 //# sourceMappingURL=cross-domain-safe-weakmap.js.map

@@ -91,34 +91,38 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             }
         }
 
-        if (!this.isSafeToReadWrite(key)) {
+        if (this.isSafeToReadWrite(key)) {
+            try {
+                let name = this.name;
+                let entry = key[name];
 
-            this._cleanupClosedWindows();
+                if (entry && entry[0] === key) {
+                    entry[1] = value;
+                } else {
+                    defineProperty(key, name, {
+                        value:    [ key, value ],
+                        writable: true
+                    });
+                }
 
-            let keys = this.keys;
-            let values = this.values;
-            let index = safeIndexOf(keys, key);
+                return;
 
-            if (index === -1) {
-                keys.push(key);
-                values.push(value);
-            } else {
-                values[index] = value;
+            } catch (err) {
+                // pass
             }
+        }
 
+        this._cleanupClosedWindows();
+
+        let keys = this.keys;
+        let values = this.values;
+        let index = safeIndexOf(keys, key);
+
+        if (index === -1) {
+            keys.push(key);
+            values.push(value);
         } else {
-
-            let name = this.name;
-            let entry = key[name];
-
-            if (entry && entry[0] === key) {
-                entry[1] = value;
-            } else {
-                defineProperty(key, name, {
-                    value:    [ key, value ],
-                    writable: true
-                });
-            }
+            values[index] = value;
         }
     }
 
@@ -135,32 +139,37 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
                 if (weakmap.has(key)) {
                     return weakmap.get(key);
                 }
+                return;
+                
             } catch (err) {
                 delete this.weakmap;
             }
         }
 
-        if (!this.isSafeToReadWrite(key)) {
+        if (this.isSafeToReadWrite(key)) {
+            try {
+                let entry = key[this.name];
 
-            this._cleanupClosedWindows();
+                if (entry && entry[0] === key) {
+                    return entry[1];
+                }
 
-            let keys = this.keys;
-            let index = safeIndexOf(keys, key);
-
-            if (index === -1) {
                 return;
-            }
-
-            return this.values[index];
-
-        } else {
-
-            let entry = key[this.name];
-
-            if (entry && entry[0] === key) {
-                return entry[1];
+            } catch (err) {
+                // pass
             }
         }
+
+        this._cleanupClosedWindows();
+
+        let keys = this.keys;
+        let index = safeIndexOf(keys, key);
+
+        if (index === -1) {
+            return;
+        }
+
+        return this.values[index];
     }
 
     delete(key : K) {
@@ -179,25 +188,26 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             }
         }
 
-        if (!this.isSafeToReadWrite(key)) {
+        if (this.isSafeToReadWrite(key)) {
+            try {
+                let entry = key[this.name];
 
-            this._cleanupClosedWindows();
-
-            let keys = this.keys;
-            let index = safeIndexOf(keys, key);
-
-            if (index !== -1) {
-                keys.splice(index, 1);
-                this.values.splice(index, 1);
+                if (entry && entry[0] === key) {
+                    entry[0] = entry[1] = undefined;
+                }
+            } catch (err) {
+                // pass
             }
+        }
 
-        } else {
+        this._cleanupClosedWindows();
 
-            let entry = key[this.name];
+        let keys = this.keys;
+        let index = safeIndexOf(keys, key);
 
-            if (entry && entry[0] === key) {
-                entry[0] = entry[1] = undefined;
-            }
+        if (index !== -1) {
+            keys.splice(index, 1);
+            this.values.splice(index, 1);
         }
     }
 
@@ -219,23 +229,24 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             }
         }
 
-        if (!this.isSafeToReadWrite(key)) {
+        if (this.isSafeToReadWrite(key)) {
+            try {
+                let entry = key[this.name];
 
-            this._cleanupClosedWindows();
+                if (entry && entry[0] === key) {
+                    return true;
+                }
 
-            let index = safeIndexOf(this.keys, key);
-            return index !== -1;
-
-        } else {
-
-            let entry = key[this.name];
-
-            if (entry && entry[0] === key) {
-                return true;
+                return false;
+            } catch (err) {
+                // pass
             }
-
-            return false;
         }
+
+        this._cleanupClosedWindows();
+
+        let index = safeIndexOf(this.keys, key);
+        return index !== -1;
     }
 
     getOrSet(key : K, getter : () => V) : V {

@@ -275,37 +275,36 @@
                     } catch (err) {
                         delete this.weakmap;
                     }
-                    if (this.isSafeToReadWrite(key)) {
+                    if (this.isSafeToReadWrite(key)) try {
                         var name = this.name, entry = key[name];
                         entry && entry[0] === key ? entry[1] = value : defineProperty(key, name, {
                             value: [ key, value ],
                             writable: !0
                         });
-                    } else {
-                        this._cleanupClosedWindows();
-                        var keys = this.keys, values = this.values, index = safeIndexOf(keys, key);
-                        if (-1 === index) {
-                            keys.push(key);
-                            values.push(value);
-                        } else values[index] = value;
-                    }
+                        return;
+                    } catch (err) {}
+                    this._cleanupClosedWindows();
+                    var keys = this.keys, values = this.values, index = safeIndexOf(keys, key);
+                    if (-1 === index) {
+                        keys.push(key);
+                        values.push(value);
+                    } else values[index] = value;
                 };
                 CrossDomainSafeWeakMap.prototype.get = function(key) {
                     if (!key) throw new Error("WeakMap expected key");
                     var weakmap = this.weakmap;
                     if (weakmap) try {
-                        if (weakmap.has(key)) return weakmap.get(key);
+                        return weakmap.has(key) ? weakmap.get(key) : void 0;
                     } catch (err) {
                         delete this.weakmap;
                     }
-                    if (!this.isSafeToReadWrite(key)) {
-                        this._cleanupClosedWindows();
-                        var index = safeIndexOf(this.keys, key);
-                        if (-1 === index) return;
-                        return this.values[index];
-                    }
-                    var entry = key[this.name];
-                    if (entry && entry[0] === key) return entry[1];
+                    if (this.isSafeToReadWrite(key)) try {
+                        var entry = key[this.name];
+                        return entry && entry[0] === key ? entry[1] : void 0;
+                    } catch (err) {}
+                    this._cleanupClosedWindows();
+                    var index = safeIndexOf(this.keys, key);
+                    if (-1 !== index) return this.values[index];
                 };
                 CrossDomainSafeWeakMap.prototype.delete = function(key) {
                     if (!key) throw new Error("WeakMap expected key");
@@ -315,16 +314,15 @@
                     } catch (err) {
                         delete this.weakmap;
                     }
-                    if (this.isSafeToReadWrite(key)) {
+                    if (this.isSafeToReadWrite(key)) try {
                         var entry = key[this.name];
                         entry && entry[0] === key && (entry[0] = entry[1] = void 0);
-                    } else {
-                        this._cleanupClosedWindows();
-                        var keys = this.keys, index = safeIndexOf(keys, key);
-                        if (-1 !== index) {
-                            keys.splice(index, 1);
-                            this.values.splice(index, 1);
-                        }
+                    } catch (err) {}
+                    this._cleanupClosedWindows();
+                    var keys = this.keys, index = safeIndexOf(keys, key);
+                    if (-1 !== index) {
+                        keys.splice(index, 1);
+                        this.values.splice(index, 1);
                     }
                 };
                 CrossDomainSafeWeakMap.prototype.has = function(key) {
@@ -335,10 +333,10 @@
                     } catch (err) {
                         delete this.weakmap;
                     }
-                    if (this.isSafeToReadWrite(key)) {
+                    if (this.isSafeToReadWrite(key)) try {
                         var entry = key[this.name];
                         return !(!entry || entry[0] !== key);
-                    }
+                    } catch (err) {}
                     this._cleanupClosedWindows();
                     return -1 !== safeIndexOf(this.keys, key);
                 };

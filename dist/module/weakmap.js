@@ -87,33 +87,37 @@ export var CrossDomainSafeWeakMap = function () {
             }
         }
 
-        if (!this.isSafeToReadWrite(key)) {
+        if (this.isSafeToReadWrite(key)) {
+            try {
+                var name = this.name;
+                var entry = key[name];
 
-            this._cleanupClosedWindows();
+                if (entry && entry[0] === key) {
+                    entry[1] = value;
+                } else {
+                    defineProperty(key, name, {
+                        value: [key, value],
+                        writable: true
+                    });
+                }
 
-            var keys = this.keys;
-            var values = this.values;
-            var index = safeIndexOf(keys, key);
-
-            if (index === -1) {
-                keys.push(key);
-                values.push(value);
-            } else {
-                values[index] = value;
+                return;
+            } catch (err) {
+                // pass
             }
+        }
+
+        this._cleanupClosedWindows();
+
+        var keys = this.keys;
+        var values = this.values;
+        var index = safeIndexOf(keys, key);
+
+        if (index === -1) {
+            keys.push(key);
+            values.push(value);
         } else {
-
-            var name = this.name;
-            var entry = key[name];
-
-            if (entry && entry[0] === key) {
-                entry[1] = value;
-            } else {
-                defineProperty(key, name, {
-                    value: [key, value],
-                    writable: true
-                });
-            }
+            values[index] = value;
         }
     };
 
@@ -130,31 +134,36 @@ export var CrossDomainSafeWeakMap = function () {
                 if (weakmap.has(key)) {
                     return weakmap.get(key);
                 }
+                return;
             } catch (err) {
                 delete this.weakmap;
             }
         }
 
-        if (!this.isSafeToReadWrite(key)) {
+        if (this.isSafeToReadWrite(key)) {
+            try {
+                var entry = key[this.name];
 
-            this._cleanupClosedWindows();
+                if (entry && entry[0] === key) {
+                    return entry[1];
+                }
 
-            var keys = this.keys;
-            var index = safeIndexOf(keys, key);
-
-            if (index === -1) {
                 return;
-            }
-
-            return this.values[index];
-        } else {
-
-            var entry = key[this.name];
-
-            if (entry && entry[0] === key) {
-                return entry[1];
+            } catch (err) {
+                // pass
             }
         }
+
+        this._cleanupClosedWindows();
+
+        var keys = this.keys;
+        var index = safeIndexOf(keys, key);
+
+        if (index === -1) {
+            return;
+        }
+
+        return this.values[index];
     };
 
     CrossDomainSafeWeakMap.prototype['delete'] = function _delete(key) {
@@ -173,24 +182,26 @@ export var CrossDomainSafeWeakMap = function () {
             }
         }
 
-        if (!this.isSafeToReadWrite(key)) {
+        if (this.isSafeToReadWrite(key)) {
+            try {
+                var entry = key[this.name];
 
-            this._cleanupClosedWindows();
-
-            var keys = this.keys;
-            var index = safeIndexOf(keys, key);
-
-            if (index !== -1) {
-                keys.splice(index, 1);
-                this.values.splice(index, 1);
+                if (entry && entry[0] === key) {
+                    entry[0] = entry[1] = undefined;
+                }
+            } catch (err) {
+                // pass
             }
-        } else {
+        }
 
-            var entry = key[this.name];
+        this._cleanupClosedWindows();
 
-            if (entry && entry[0] === key) {
-                entry[0] = entry[1] = undefined;
-            }
+        var keys = this.keys;
+        var index = safeIndexOf(keys, key);
+
+        if (index !== -1) {
+            keys.splice(index, 1);
+            this.values.splice(index, 1);
         }
     };
 
@@ -212,22 +223,24 @@ export var CrossDomainSafeWeakMap = function () {
             }
         }
 
-        if (!this.isSafeToReadWrite(key)) {
+        if (this.isSafeToReadWrite(key)) {
+            try {
+                var entry = key[this.name];
 
-            this._cleanupClosedWindows();
+                if (entry && entry[0] === key) {
+                    return true;
+                }
 
-            var index = safeIndexOf(this.keys, key);
-            return index !== -1;
-        } else {
-
-            var entry = key[this.name];
-
-            if (entry && entry[0] === key) {
-                return true;
+                return false;
+            } catch (err) {
+                // pass
             }
-
-            return false;
         }
+
+        this._cleanupClosedWindows();
+
+        var index = safeIndexOf(this.keys, key);
+        return index !== -1;
     };
 
     CrossDomainSafeWeakMap.prototype.getOrSet = function getOrSet(key, getter) {

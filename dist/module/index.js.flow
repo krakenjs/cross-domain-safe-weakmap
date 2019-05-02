@@ -14,7 +14,7 @@ declare export class WeakMap<K: Object, V> {
   getOrSet(key: K, getter: () => V): V;
   has(key: K): boolean;
   isSafeToReadWrite(key: K): boolean;
-  set(key: K, value: V): void | void | void | void;
+  set(key: K, value: V): void | void | void | void | void | void | void | void;
 }
 
 declare export default {WeakMap: WeakMap<K: Object, V>};

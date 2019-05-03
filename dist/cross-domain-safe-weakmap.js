@@ -294,7 +294,7 @@
                     if (!key) throw new Error("WeakMap expected key");
                     var weakmap = this.weakmap;
                     if (weakmap) try {
-                        return weakmap.has(key) ? weakmap.get(key) : void 0;
+                        if (weakmap.has(key)) return weakmap.get(key);
                     } catch (err) {
                         delete this.weakmap;
                     }

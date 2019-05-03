@@ -139,7 +139,6 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
                 if (weakmap.has(key)) {
                     return weakmap.get(key);
                 }
-                return;
                 
             } catch (err) {
                 delete this.weakmap;

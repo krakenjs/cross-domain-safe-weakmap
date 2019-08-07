@@ -38,37 +38,51 @@
         __webpack_require__.p = "";
         return __webpack_require__(__webpack_require__.s = "./src/index.js");
     }({
-        "./node_modules/cross-domain-utils/src/constants.js": function(module, __webpack_exports__, __webpack_require__) {
+        "./src/index.js": function(module, __webpack_exports__, __webpack_require__) {
             "use strict";
-            __webpack_require__.d(__webpack_exports__, "a", function() {
-                return PROTOCOL;
-            });
-            __webpack_require__.d(__webpack_exports__, "b", function() {
-                return WILDCARD;
+            Object.defineProperty(__webpack_exports__, "__esModule", {
+                value: !0
             });
             var PROTOCOL = {
                 MOCK: "mock:",
                 FILE: "file:",
                 ABOUT: "about:"
-            }, WILDCARD = "*";
-        },
-        "./node_modules/cross-domain-utils/src/index.js": function(module, __webpack_exports__, __webpack_require__) {
-            "use strict";
-            var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__("./node_modules/cross-domain-utils/src/utils.js");
-            __webpack_require__.d(__webpack_exports__, "isWindow", function() {
-                return __WEBPACK_IMPORTED_MODULE_0__utils__.a;
-            });
-            __webpack_require__.d(__webpack_exports__, "isWindowClosed", function() {
-                return __WEBPACK_IMPORTED_MODULE_0__utils__.b;
-            });
-            var __WEBPACK_IMPORTED_MODULE_1__types__ = __webpack_require__("./node_modules/cross-domain-utils/src/types.js");
-            __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__types__), __webpack_require__("./node_modules/cross-domain-utils/src/constants.js");
-        },
-        "./node_modules/cross-domain-utils/src/types.js": function(module, exports) {},
-        "./node_modules/cross-domain-utils/src/utils.js": function(module, __webpack_exports__, __webpack_require__) {
-            "use strict";
-            var constants = __webpack_require__("./node_modules/cross-domain-utils/src/constants.js");
-            __webpack_exports__.b = function(win) {
+            }, IE_WIN_ACCESS_ERROR = "Call was rejected by callee.\r\n";
+            function isAboutProtocol() {
+                return (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : window).location.protocol === PROTOCOL.ABOUT;
+            }
+            function canReadFromWindow(win) {
+                try {
+                    win && win.location && win.location.href;
+                    return !0;
+                } catch (err) {}
+                return !1;
+            }
+            function getActualDomain(win) {
+                var location = (win = win || window).location;
+                if (!location) throw new Error("Can not read window location");
+                var protocol = location.protocol;
+                if (!protocol) throw new Error("Can not read window protocol");
+                if (protocol === PROTOCOL.FILE) return PROTOCOL.FILE + "//";
+                if (protocol === PROTOCOL.ABOUT) {
+                    var parent = function() {
+                        var win = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : window;
+                        if (win) try {
+                            if (win.parent && win.parent !== win) return win.parent;
+                        } catch (err) {}
+                    }(win);
+                    return parent && canReadFromWindow(parent) ? getActualDomain(parent) : PROTOCOL.ABOUT + "//";
+                }
+                var host = location.host;
+                if (!host) throw new Error("Can not read window host");
+                return protocol + "//" + host;
+            }
+            function getDomain(win) {
+                var domain = getActualDomain(win = win || window);
+                return domain && win.mockDomain && 0 === win.mockDomain.indexOf(PROTOCOL.MOCK) ? win.mockDomain : domain;
+            }
+            var iframeWindows = [], iframeFrames = [];
+            function isWindowClosed(win) {
                 var allowMock = !(arguments.length > 1 && void 0 !== arguments[1]) || arguments[1];
                 try {
                     if (win === window) return !1;
@@ -130,8 +144,8 @@
                     }(frame)) return !0;
                 }
                 return !1;
-            };
-            __webpack_exports__.a = function(obj) {
+            }
+            function isWindow(obj) {
                 try {
                     if (obj === window) return !0;
                 } catch (err) {
@@ -163,70 +177,24 @@
                     if (err && err.message === IE_WIN_ACCESS_ERROR) return !0;
                 }
                 try {
-                    obj && obj.__cross_domain_utils_window_check__;
+                    if (obj && "__unlikely_value__" === obj.__cross_domain_utils_window_check__) return !1;
                 } catch (err) {
                     return !0;
                 }
                 return !1;
-            };
-            var IE_WIN_ACCESS_ERROR = "Call was rejected by callee.\r\n";
-            function isAboutProtocol() {
-                return (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : window).location.protocol === constants.a.ABOUT;
             }
-            function canReadFromWindow(win) {
-                try {
-                    win && win.location && win.location.href;
-                    return !0;
-                } catch (err) {}
-                return !1;
-            }
-            function getActualDomain(win) {
-                var location = (win = win || window).location;
-                if (!location) throw new Error("Can not read window location");
-                var protocol = location.protocol;
-                if (!protocol) throw new Error("Can not read window protocol");
-                if (protocol === constants.a.FILE) return constants.a.FILE + "//";
-                if (protocol === constants.a.ABOUT) {
-                    var parent = function(win) {
-                        if (win) try {
-                            if (win.parent && win.parent !== win) return win.parent;
-                        } catch (err) {}
-                    }(win);
-                    return parent && canReadFromWindow(parent) ? getActualDomain(parent) : constants.a.ABOUT + "//";
-                }
-                var host = location.host;
-                if (!host) throw new Error("Can not read window host");
-                return protocol + "//" + host;
-            }
-            function getDomain(win) {
-                var domain = getActualDomain(win = win || window);
-                return domain && win.mockDomain && 0 === win.mockDomain.indexOf(constants.a.MOCK) ? win.mockDomain : domain;
-            }
-            var iframeWindows = [], iframeFrames = [];
-        },
-        "./src/index.js": function(module, __webpack_exports__, __webpack_require__) {
-            "use strict";
-            Object.defineProperty(__webpack_exports__, "__esModule", {
-                value: !0
-            });
-            var interface_namespaceObject = {};
-            __webpack_require__.d(interface_namespaceObject, "WeakMap", function() {
-                return weakmap_CrossDomainSafeWeakMap;
-            });
-            var src = __webpack_require__("./node_modules/cross-domain-utils/src/index.js");
-            function safeIndexOf(collection, item) {
+            function util_safeIndexOf(collection, item) {
                 for (var i = 0; i < collection.length; i++) try {
                     if (collection[i] === item) return i;
                 } catch (err) {}
                 return -1;
             }
-            var defineProperty = Object.defineProperty, counter = Date.now() % 1e9, weakmap_CrossDomainSafeWeakMap = function() {
+            var weakmap_CrossDomainSafeWeakMap = function() {
                 function CrossDomainSafeWeakMap() {
                     !function(instance, Constructor) {
                         if (!(instance instanceof CrossDomainSafeWeakMap)) throw new TypeError("Cannot call a class as a function");
                     }(this);
-                    counter += 1;
-                    this.name = "__weakmap_" + (1e9 * Math.random() >>> 0) + "__" + counter;
+                    this.name = "__weakmap_" + (1e9 * Math.random() >>> 0) + "__";
                     if (function() {
                         if ("undefined" == typeof WeakMap) return !1;
                         if (void 0 === Object.freeze) return !1;
@@ -247,7 +215,7 @@
                 CrossDomainSafeWeakMap.prototype._cleanupClosedWindows = function() {
                     for (var weakmap = this.weakmap, keys = this.keys, i = 0; i < keys.length; i++) {
                         var value = keys[i];
-                        if (Object(src.isWindow)(value) && Object(src.isWindowClosed)(value)) {
+                        if (isWindow(value) && isWindowClosed(value)) {
                             if (weakmap) try {
                                 weakmap.delete(value);
                             } catch (err) {}
@@ -258,7 +226,7 @@
                     }
                 };
                 CrossDomainSafeWeakMap.prototype.isSafeToReadWrite = function(key) {
-                    if (Object(src.isWindow)(key)) return !1;
+                    if (isWindow(key)) return !1;
                     try {
                         key && key.self;
                         key && key[this.name];
@@ -277,14 +245,14 @@
                     }
                     if (this.isSafeToReadWrite(key)) try {
                         var name = this.name, entry = key[name];
-                        entry && entry[0] === key ? entry[1] = value : defineProperty(key, name, {
+                        entry && entry[0] === key ? entry[1] = value : Object.defineProperty(key, name, {
                             value: [ key, value ],
                             writable: !0
                         });
                         return;
                     } catch (err) {}
                     this._cleanupClosedWindows();
-                    var keys = this.keys, values = this.values, index = safeIndexOf(keys, key);
+                    var keys = this.keys, values = this.values, index = util_safeIndexOf(keys, key);
                     if (-1 === index) {
                         keys.push(key);
                         values.push(value);
@@ -303,7 +271,7 @@
                         return entry && entry[0] === key ? entry[1] : void 0;
                     } catch (err) {}
                     this._cleanupClosedWindows();
-                    var index = safeIndexOf(this.keys, key);
+                    var index = util_safeIndexOf(this.keys, key);
                     if (-1 !== index) return this.values[index];
                 };
                 CrossDomainSafeWeakMap.prototype.delete = function(key) {
@@ -319,7 +287,7 @@
                         entry && entry[0] === key && (entry[0] = entry[1] = void 0);
                     } catch (err) {}
                     this._cleanupClosedWindows();
-                    var keys = this.keys, index = safeIndexOf(keys, key);
+                    var keys = this.keys, index = util_safeIndexOf(keys, key);
                     if (-1 !== index) {
                         keys.splice(index, 1);
                         this.values.splice(index, 1);
@@ -338,7 +306,7 @@
                         return !(!entry || entry[0] !== key);
                     } catch (err) {}
                     this._cleanupClosedWindows();
-                    return -1 !== safeIndexOf(this.keys, key);
+                    return -1 !== util_safeIndexOf(this.keys, key);
                 };
                 CrossDomainSafeWeakMap.prototype.getOrSet = function(key, getter) {
                     if (this.has(key)) return this.get(key);
@@ -351,7 +319,6 @@
             __webpack_require__.d(__webpack_exports__, "WeakMap", function() {
                 return weakmap_CrossDomainSafeWeakMap;
             });
-            __webpack_exports__.default = interface_namespaceObject;
         }
     });
 });

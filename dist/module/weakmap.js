@@ -5,17 +5,12 @@ import { isWindow, isWindowClosed } from 'cross-domain-utils/src';
 import { hasNativeWeakMap } from './native';
 import { noop, safeIndexOf } from './util';
 
-var defineProperty = Object.defineProperty;
-var counter = Date.now() % 1e9;
-
 export var CrossDomainSafeWeakMap = function () {
     function CrossDomainSafeWeakMap() {
         _classCallCheck(this, CrossDomainSafeWeakMap);
 
-        counter += 1;
-
         // eslint-disable-next-line no-bitwise
-        this.name = '__weakmap_' + (Math.random() * 1e9 >>> 0) + '__' + counter;
+        this.name = '__weakmap_' + (Math.random() * 1e9 >>> 0) + '__';
 
         if (hasNativeWeakMap()) {
             try {
@@ -95,7 +90,7 @@ export var CrossDomainSafeWeakMap = function () {
                 if (entry && entry[0] === key) {
                     entry[1] = value;
                 } else {
-                    defineProperty(key, name, {
+                    Object.defineProperty(key, name, {
                         value: [key, value],
                         writable: true
                     });

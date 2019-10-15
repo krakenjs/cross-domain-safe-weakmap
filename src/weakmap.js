@@ -8,7 +8,7 @@ import { noop, safeIndexOf } from './util';
 export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
     name : string
-    weakmap : WeakMap<K, V>
+    weakmap : ?WeakMap<K, V>
     keys : Array<K>
     values : Array<V>
 

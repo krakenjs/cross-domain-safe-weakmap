@@ -58,8 +58,8 @@
                 } catch (err) {}
                 return !1;
             }
-            function getActualDomain(win) {
-                var location = (win = win || window).location;
+            function getActualDomain() {
+                var win = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : window, location = win.location;
                 if (!location) throw new Error("Can not read window location");
                 var protocol = location.protocol;
                 if (!protocol) throw new Error("Can not read window protocol");
@@ -77,8 +77,8 @@
                 if (!host) throw new Error("Can not read window host");
                 return protocol + "//" + host;
             }
-            function getDomain(win) {
-                var domain = getActualDomain(win = win || window);
+            function getDomain() {
+                var win = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : window, domain = getActualDomain(win);
                 return domain && win.mockDomain && 0 === win.mockDomain.indexOf(PROTOCOL.MOCK) ? win.mockDomain : domain;
             }
             var iframeWindows = [], iframeFrames = [];

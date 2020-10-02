@@ -9,7 +9,9 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
     name : string
     weakmap : ?WeakMap<K, V>
+    // eslint-disable-next-line flowtype/no-mutable-array
     keys : Array<K>
+    // eslint-disable-next-line flowtype/no-mutable-array
     values : Array<V>
 
     constructor() {
@@ -30,11 +32,11 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
     _cleanupClosedWindows() {
 
-        let weakmap = this.weakmap;
-        let keys = this.keys;
+        const weakmap = this.weakmap;
+        const keys = this.keys;
 
         for (let i = 0; i < keys.length; i++) {
-            let value = keys[i];
+            const value = keys[i];
 
             if (isWindow(value) && isWindowClosed(value)) {
 
@@ -76,7 +78,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             throw new Error(`WeakMap expected key`);
         }
 
-        let weakmap = this.weakmap;
+        const weakmap = this.weakmap;
 
         if (weakmap) {
             try {
@@ -88,8 +90,8 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
         if (this.isSafeToReadWrite(key)) {
             try {
-                let name = this.name;
-                let entry = key[name];
+                const name = this.name;
+                const entry = key[name];
 
                 if (entry && entry[0] === key) {
                     entry[1] = value;
@@ -109,9 +111,9 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
         this._cleanupClosedWindows();
 
-        let keys = this.keys;
-        let values = this.values;
-        let index = safeIndexOf(keys, key);
+        const keys = this.keys;
+        const values = this.values;
+        const index = safeIndexOf(keys, key);
 
         if (index === -1) {
             keys.push(key);
@@ -127,7 +129,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             throw new Error(`WeakMap expected key`);
         }
 
-        let weakmap = this.weakmap;
+        const weakmap = this.weakmap;
 
         if (weakmap) {
             try {
@@ -142,7 +144,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
         if (this.isSafeToReadWrite(key)) {
             try {
-                let entry = key[this.name];
+                const entry = key[this.name];
 
                 if (entry && entry[0] === key) {
                     return entry[1];
@@ -156,8 +158,8 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
         this._cleanupClosedWindows();
 
-        let keys = this.keys;
-        let index = safeIndexOf(keys, key);
+        const keys = this.keys;
+        const index = safeIndexOf(keys, key);
 
         if (index === -1) {
             return;
@@ -172,7 +174,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             throw new Error(`WeakMap expected key`);
         }
 
-        let weakmap = this.weakmap;
+        const weakmap = this.weakmap;
 
         if (weakmap) {
             try {
@@ -184,7 +186,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
         if (this.isSafeToReadWrite(key)) {
             try {
-                let entry = key[this.name];
+                const entry = key[this.name];
 
                 if (entry && entry[0] === key) {
                     entry[0] = entry[1] = undefined;
@@ -196,8 +198,8 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
         this._cleanupClosedWindows();
 
-        let keys = this.keys;
-        let index = safeIndexOf(keys, key);
+        const keys = this.keys;
+        const index = safeIndexOf(keys, key);
 
         if (index !== -1) {
             keys.splice(index, 1);
@@ -211,7 +213,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             throw new Error(`WeakMap expected key`);
         }
 
-        let weakmap = this.weakmap;
+        const weakmap = this.weakmap;
 
         if (weakmap) {
             try {
@@ -225,7 +227,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
         if (this.isSafeToReadWrite(key)) {
             try {
-                let entry = key[this.name];
+                const entry = key[this.name];
 
                 if (entry && entry[0] === key) {
                     return true;
@@ -239,7 +241,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
         this._cleanupClosedWindows();
 
-        let index = safeIndexOf(this.keys, key);
+        const index = safeIndexOf(this.keys, key);
         return index !== -1;
     }
 
@@ -249,7 +251,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             return this.get(key);
         }
 
-        let value = getter();
+        const value = getter();
         this.set(key, value);
         return value;
     }

@@ -12,9 +12,9 @@ export function hasNativeWeakMap() : boolean {
 
     try {
 
-        let testWeakMap = new WeakMap();
-        let testKey = {};
-        let testValue = '__testvalue__';
+        const testWeakMap = new WeakMap();
+        const testKey = {};
+        const testValue = '__testvalue__';
 
         Object.freeze(testKey);
 

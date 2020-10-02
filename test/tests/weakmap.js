@@ -4,7 +4,7 @@
 import { WeakMap } from '../../src';
 
 function getWindow() : Object {
-    let win = {};
+    const win = {};
     win.self = win;
     win.closed = false;
     win.parent = win;
@@ -16,13 +16,13 @@ describe('weakmap standard cases', () => {
 
     it('should set and get a key', () => {
 
-        let map = new WeakMap();
-        let obj = {};
-        let val = 'foo';
+        const map = new WeakMap();
+        const obj = {};
+        const val = 'foo';
 
         map.set(obj, val);
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== val) {
             throw new Error(`Expected ${ result || '' } to be '${ val }'`);
@@ -31,10 +31,10 @@ describe('weakmap standard cases', () => {
 
     it('should get a non-existant key', () => {
 
-        let map = new WeakMap();
-        let obj = {};
+        const map = new WeakMap();
+        const obj = {};
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== undefined) {
             throw new Error(`Expected result to be undefined`);
@@ -44,15 +44,15 @@ describe('weakmap standard cases', () => {
 
     it('should set over an existing key, and get a key', () => {
 
-        let map = new WeakMap();
-        let obj = {};
-        let val1 = 'foo';
-        let val2 = 'bar';
+        const map = new WeakMap();
+        const obj = {};
+        const val1 = 'foo';
+        const val2 = 'bar';
 
         map.set(obj, val1);
         map.set(obj, val2);
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== val2) {
             throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
@@ -61,13 +61,13 @@ describe('weakmap standard cases', () => {
 
     it('should set and check for a key', () => {
 
-        let map = new WeakMap();
-        let obj = {};
-        let val = 'foo';
+        const map = new WeakMap();
+        const obj = {};
+        const val = 'foo';
 
         map.set(obj, val);
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (!result) {
             throw new Error(`Expected ${ result.toString() } to be true`);
@@ -76,10 +76,10 @@ describe('weakmap standard cases', () => {
 
     it('should check for a non-existant key', () => {
 
-        let map = new WeakMap();
-        let obj = {};
+        const map = new WeakMap();
+        const obj = {};
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (result) {
             throw new Error(`Expected ${ result.toString() } to be false`);
@@ -88,14 +88,14 @@ describe('weakmap standard cases', () => {
 
     it('should set, delete, and check for a key', () => {
 
-        let map = new WeakMap();
-        let obj = {};
-        let val = 'foo';
+        const map = new WeakMap();
+        const obj = {};
+        const val = 'foo';
 
         map.set(obj, val);
         map.delete(obj);
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (result) {
             throw new Error(`Expected ${ result.toString() } to be false`);
@@ -105,17 +105,17 @@ describe('weakmap standard cases', () => {
 
 describe('weakmap cross-origin cases', () => {
 
-    let win = getWindow();
+    const win = getWindow();
 
     it('should set and get a key', () => {
 
-        let map = new WeakMap();
-        let obj = win;
-        let val = 'foo';
+        const map = new WeakMap();
+        const obj = win;
+        const val = 'foo';
 
         map.set(obj, val);
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== val) {
             throw new Error(`Expected ${ result || '' } to be '${ val }'`);
@@ -124,10 +124,10 @@ describe('weakmap cross-origin cases', () => {
 
     it('should get a non-existant key', () => {
 
-        let map = new WeakMap();
-        let obj = win;
+        const map = new WeakMap();
+        const obj = win;
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== undefined) {
             throw new Error(`Expected result to be undefined`);
@@ -136,15 +136,15 @@ describe('weakmap cross-origin cases', () => {
 
     it('should set over an existing key, and get a key', () => {
 
-        let map = new WeakMap();
-        let obj = win;
-        let val1 = 'foo';
-        let val2 = 'bar';
+        const map = new WeakMap();
+        const obj = win;
+        const val1 = 'foo';
+        const val2 = 'bar';
 
         map.set(obj, val1);
         map.set(obj, val2);
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== val2) {
             throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
@@ -153,13 +153,13 @@ describe('weakmap cross-origin cases', () => {
 
     it('should set and check for a key', () => {
 
-        let map = new WeakMap();
-        let obj = win;
-        let val = 'foo';
+        const map = new WeakMap();
+        const obj = win;
+        const val = 'foo';
 
         map.set(obj, val);
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (!result) {
             throw new Error(`Expected ${ result.toString() } to be true`);
@@ -168,10 +168,10 @@ describe('weakmap cross-origin cases', () => {
 
     it('should check for a non-existant key', () => {
 
-        let map = new WeakMap();
-        let obj = win;
+        const map = new WeakMap();
+        const obj = win;
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (result) {
             throw new Error(`Expected ${ result.toString() } to be false`);
@@ -180,14 +180,14 @@ describe('weakmap cross-origin cases', () => {
 
     it('should set, delete, and check for a key', () => {
 
-        let map = new WeakMap();
-        let obj = win;
-        let val = 'foo';
+        const map = new WeakMap();
+        const obj = win;
+        const val = 'foo';
 
         map.set(obj, val);
         map.delete(obj);
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (result) {
             throw new Error(`Expected ${ result.toString() } to be false`);
@@ -197,7 +197,7 @@ describe('weakmap cross-origin cases', () => {
 
 describe('weakmap cross-origin cases with IE erroring window', () => {
 
-    let win = getWindow();
+    const win = getWindow();
 
     // $FlowFixMe
     Object.defineProperty(win, 'self', {
@@ -208,13 +208,13 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
 
     it('should set and get a key', () => {
 
-        let map = new WeakMap();
-        let obj = win;
-        let val = 'foo';
+        const map = new WeakMap();
+        const obj = win;
+        const val = 'foo';
 
         map.set(obj, val);
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== val) {
             throw new Error(`Expected ${ result || '' } to be '${ val }'`);
@@ -223,10 +223,10 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
 
     it('should get a non-existant key', () => {
 
-        let map = new WeakMap();
-        let obj = win;
+        const map = new WeakMap();
+        const obj = win;
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== undefined) {
             throw new Error(`Expected result to be undefined`);
@@ -235,15 +235,15 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
 
     it('should set over an existing key, and get a key', () => {
 
-        let map = new WeakMap();
-        let obj = win;
-        let val1 = 'foo';
-        let val2 = 'bar';
+        const map = new WeakMap();
+        const obj = win;
+        const val1 = 'foo';
+        const val2 = 'bar';
 
         map.set(obj, val1);
         map.set(obj, val2);
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== val2) {
             throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
@@ -252,13 +252,13 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
 
     it('should set and check for a key', () => {
 
-        let map = new WeakMap();
-        let obj = win;
-        let val = 'foo';
+        const map = new WeakMap();
+        const obj = win;
+        const val = 'foo';
 
         map.set(obj, val);
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (!result) {
             throw new Error(`Expected ${ result.toString() } to be true`);
@@ -267,10 +267,10 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
 
     it('should check for a non-existant key', () => {
 
-        let map = new WeakMap();
-        let obj = win;
+        const map = new WeakMap();
+        const obj = win;
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (result) {
             throw new Error(`Expected ${ result.toString() } to be false`);
@@ -279,14 +279,14 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
 
     it('should set, delete, and check for a key', () => {
 
-        let map = new WeakMap();
-        let obj = win;
-        let val = 'foo';
+        const map = new WeakMap();
+        const obj = win;
+        const val = 'foo';
 
         map.set(obj, val);
         map.delete(obj);
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (result) {
             throw new Error(`Expected ${ result.toString() } to be false`);
@@ -298,17 +298,17 @@ describe('weakmap standard cases with no native WeakMap', () => {
 
     it('should set and get a key', () => {
 
-        let weakMap = window.WeakMap;
+        const weakMap = window.WeakMap;
         delete window.WeakMap;
-        let map = new WeakMap();
+        const map = new WeakMap();
         window.WeakMap = weakMap;
 
-        let obj = {};
-        let val = 'foo';
+        const obj = {};
+        const val = 'foo';
 
         map.set(obj, val);
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== val) {
             throw new Error(`Expected ${ result || '' } to be '${ val }'`);
@@ -317,14 +317,14 @@ describe('weakmap standard cases with no native WeakMap', () => {
 
     it('should get a non-existant key', () => {
 
-        let weakMap = window.WeakMap;
+        const weakMap = window.WeakMap;
         delete window.WeakMap;
-        let map = new WeakMap();
+        const map = new WeakMap();
         window.WeakMap = weakMap;
 
-        let obj = {};
+        const obj = {};
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== undefined) {
             throw new Error(`Expected result to be undefined`);
@@ -334,19 +334,19 @@ describe('weakmap standard cases with no native WeakMap', () => {
 
     it('should set over an existing key, and get a key', () => {
 
-        let weakMap = window.WeakMap;
+        const weakMap = window.WeakMap;
         delete window.WeakMap;
-        let map = new WeakMap();
+        const map = new WeakMap();
         window.WeakMap = weakMap;
 
-        let obj = {};
-        let val1 = 'foo';
-        let val2 = 'bar';
+        const obj = {};
+        const val1 = 'foo';
+        const val2 = 'bar';
 
         map.set(obj, val1);
         map.set(obj, val2);
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== val2) {
             throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
@@ -355,17 +355,17 @@ describe('weakmap standard cases with no native WeakMap', () => {
 
     it('should set and check for a key', () => {
 
-        let weakMap = window.WeakMap;
+        const weakMap = window.WeakMap;
         delete window.WeakMap;
-        let map = new WeakMap();
+        const map = new WeakMap();
         window.WeakMap = weakMap;
 
-        let obj = {};
-        let val = 'foo';
+        const obj = {};
+        const val = 'foo';
 
         map.set(obj, val);
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (!result) {
             throw new Error(`Expected ${ result.toString() } to be true`);
@@ -374,14 +374,14 @@ describe('weakmap standard cases with no native WeakMap', () => {
 
     it('should check for a non-existant key', () => {
 
-        let weakMap = window.WeakMap;
+        const weakMap = window.WeakMap;
         delete window.WeakMap;
-        let map = new WeakMap();
+        const map = new WeakMap();
         window.WeakMap = weakMap;
 
-        let obj = {};
+        const obj = {};
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (result) {
             throw new Error(`Expected ${ result.toString() } to be false`);
@@ -390,18 +390,18 @@ describe('weakmap standard cases with no native WeakMap', () => {
 
     it('should set, delete, and check for a key', () => {
 
-        let weakMap = window.WeakMap;
+        const weakMap = window.WeakMap;
         delete window.WeakMap;
-        let map = new WeakMap();
+        const map = new WeakMap();
         window.WeakMap = weakMap;
 
-        let obj = {};
-        let val = 'foo';
+        const obj = {};
+        const val = 'foo';
 
         map.set(obj, val);
         map.delete(obj);
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (result) {
             throw new Error(`Expected ${ result.toString() } to be false`);
@@ -411,21 +411,21 @@ describe('weakmap standard cases with no native WeakMap', () => {
 
 describe('weakmap cross-origin cases with no native WeakMap', () => {
 
-    let win = getWindow();
+    const win = getWindow();
 
     it('should set and get a key', () => {
 
-        let weakMap = window.WeakMap;
+        const weakMap = window.WeakMap;
         delete window.WeakMap;
-        let map = new WeakMap();
+        const map = new WeakMap();
         window.WeakMap = weakMap;
 
-        let obj = win;
-        let val = 'foo';
+        const obj = win;
+        const val = 'foo';
 
         map.set(obj, val);
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== val) {
             throw new Error(`Expected ${ result || '' } to be '${ val }'`);
@@ -434,14 +434,14 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
 
     it('should get a non-existant key', () => {
 
-        let weakMap = window.WeakMap;
+        const weakMap = window.WeakMap;
         delete window.WeakMap;
-        let map = new WeakMap();
+        const map = new WeakMap();
         window.WeakMap = weakMap;
 
-        let obj = win;
+        const obj = win;
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== undefined) {
             throw new Error(`Expected result to be undefined`);
@@ -450,19 +450,19 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
 
     it('should set over an existing key, and get a key', () => {
 
-        let weakMap = window.WeakMap;
+        const weakMap = window.WeakMap;
         delete window.WeakMap;
-        let map = new WeakMap();
+        const map = new WeakMap();
         window.WeakMap = weakMap;
 
-        let obj = win;
-        let val1 = 'foo';
-        let val2 = 'bar';
+        const obj = win;
+        const val1 = 'foo';
+        const val2 = 'bar';
 
         map.set(obj, val1);
         map.set(obj, val2);
 
-        let result = map.get(obj);
+        const result = map.get(obj);
 
         if (result !== val2) {
             throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
@@ -471,17 +471,17 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
 
     it('should set and check for a key', () => {
 
-        let weakMap = window.WeakMap;
+        const weakMap = window.WeakMap;
         delete window.WeakMap;
-        let map = new WeakMap();
+        const map = new WeakMap();
         window.WeakMap = weakMap;
 
-        let obj = win;
-        let val = 'foo';
+        const obj = win;
+        const val = 'foo';
 
         map.set(obj, val);
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (!result) {
             throw new Error(`Expected ${ result.toString() } to be true`);
@@ -490,14 +490,14 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
 
     it('should check for a non-existant key', () => {
 
-        let weakMap = window.WeakMap;
+        const weakMap = window.WeakMap;
         delete window.WeakMap;
-        let map = new WeakMap();
+        const map = new WeakMap();
         window.WeakMap = weakMap;
 
-        let obj = win;
+        const obj = win;
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (result) {
             throw new Error(`Expected ${ result.toString() } to be false`);
@@ -506,18 +506,18 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
 
     it('should set, delete, and check for a key', () => {
 
-        let weakMap = window.WeakMap;
+        const weakMap = window.WeakMap;
         delete window.WeakMap;
-        let map = new WeakMap();
+        const map = new WeakMap();
         window.WeakMap = weakMap;
 
-        let obj = win;
-        let val = 'foo';
+        const obj = win;
+        const val = 'foo';
 
         map.set(obj, val);
         map.delete(obj);
 
-        let result = map.has(obj);
+        const result = map.has(obj);
 
         if (result) {
             throw new Error(`Expected ${ result.toString() } to be false`);

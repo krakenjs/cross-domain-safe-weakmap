@@ -1,6 +1,6 @@
 /* @flow */
 
-export function safeIndexOf<T>(collection : Array<T>, item : T) : number {
+export function safeIndexOf<T>(collection : $ReadOnlyArray<T>, item : T) : number {
     for (let i = 0; i < collection.length; i++) {
 
         try {
@@ -16,6 +16,6 @@ export function safeIndexOf<T>(collection : Array<T>, item : T) : number {
 }
 
 // eslint-disable-next-line no-unused-vars
-export function noop(...args : Array<mixed>) {
+export function noop(...args : $ReadOnlyArray<mixed>) {
     // pass
 }

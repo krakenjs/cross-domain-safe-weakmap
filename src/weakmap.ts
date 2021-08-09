@@ -1,18 +1,13 @@
-/* @flow */
-
-import { isWindow, isWindowClosed } from 'cross-domain-utils/src';
+import { isWindow, isWindowClosed } from 'cross-domain-utils';
 
 import { hasNativeWeakMap } from './native';
 import { noop, safeIndexOf } from './util';
 
-export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
-
-    name : string
-    weakmap : ?WeakMap<K, V>
-    // eslint-disable-next-line flowtype/no-mutable-array
-    keys : Array<K>
-    // eslint-disable-next-line flowtype/no-mutable-array
-    values : Array<V>
+export class CrossDomainSafeWeakMap<K extends Record<string, any>, V extends unknown> {
+    name: string;
+    weakmap: WeakMap<K, V> | null | undefined;
+    keys: Array<K>;
+    values: Array<V>;
 
     constructor() {
         // eslint-disable-next-line no-bitwise
@@ -21,17 +16,15 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
         if (hasNativeWeakMap()) {
             try {
                 this.weakmap = new WeakMap();
-            } catch (err) {
-                // pass
+            } catch (err) { // pass
             }
         }
 
-        this.keys  = [];
+        this.keys = [];
         this.values = [];
     }
 
-    _cleanupClosedWindows() {
-
+    _cleanupClosedWindows(): void {
         const weakmap = this.weakmap;
         const keys = this.keys;
 
@@ -39,25 +32,21 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
             const value = keys[i];
 
             if (isWindow(value) && isWindowClosed(value)) {
-
                 if (weakmap) {
                     try {
                         weakmap.delete(value);
-                    } catch (err) {
-                        // pass
+                    } catch (err) { // pass
                     }
                 }
 
                 keys.splice(i, 1);
                 this.values.splice(i, 1);
-
                 i -= 1;
             }
         }
     }
 
-    isSafeToReadWrite(key : K) : boolean {
-
+    isSafeToReadWrite(key: K): boolean {
         if (isWindow(key)) {
             return false;
         }
@@ -72,8 +61,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
         return true;
     }
 
-    set(key : K, value : V) {
-
+    set(key: K, value: V): void {
         if (!key) {
             throw new Error(`WeakMap expected key`);
         }
@@ -103,9 +91,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
                 }
 
                 return;
-
-            } catch (err) {
-                // pass
+            } catch (err) { // pass
             }
         }
 
@@ -123,8 +109,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
         }
     }
 
-    get(key : K) : V | void {
-
+    get(key: K): V | void {
         if (!key) {
             throw new Error(`WeakMap expected key`);
         }
@@ -136,7 +121,6 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
                 if (weakmap.has(key)) {
                     return weakmap.get(key);
                 }
-                
             } catch (err) {
                 delete this.weakmap;
             }
@@ -151,8 +135,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
                 }
 
                 return;
-            } catch (err) {
-                // pass
+            } catch (err) { // pass
             }
         }
 
@@ -168,8 +151,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
         return this.values[index];
     }
 
-    delete(key : K) {
-
+    delete(key: K): void {
         if (!key) {
             throw new Error(`WeakMap expected key`);
         }
@@ -191,8 +173,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
                 if (entry && entry[0] === key) {
                     entry[0] = entry[1] = undefined;
                 }
-            } catch (err) {
-                // pass
+            } catch (err) { // pass
             }
         }
 
@@ -207,8 +188,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
         }
     }
 
-    has(key : K) : boolean {
-
+    has(key: K): boolean {
         if (!key) {
             throw new Error(`WeakMap expected key`);
         }
@@ -234,8 +214,7 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
                 }
 
                 return false;
-            } catch (err) {
-                // pass
+            } catch (err) { // pass
             }
         }
 
@@ -245,9 +224,9 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
         return index !== -1;
     }
 
-    getOrSet(key : K, getter : () => V) : V {
+    getOrSet(key: K, getter: () => V): V {
         if (this.has(key)) {
-            // $FlowFixMe
+            // @ts-ignore
             return this.get(key);
         }
 
@@ -255,4 +234,5 @@ export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
         this.set(key, value);
         return value;
     }
+
 }

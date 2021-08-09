@@ -1,8 +1,5 @@
-/* @flow */
-
-export function safeIndexOf<T>(collection : $ReadOnlyArray<T>, item : T) : number {
+export function safeIndexOf<T>(collection: ReadonlyArray<T>, item: T): number {
     for (let i = 0; i < collection.length; i++) {
-
         try {
             if (collection[i] === item) {
                 return i;
@@ -15,7 +12,6 @@ export function safeIndexOf<T>(collection : $ReadOnlyArray<T>, item : T) : numbe
     return -1;
 }
 
-// eslint-disable-next-line no-unused-vars
-export function noop(...args : $ReadOnlyArray<mixed>) {
+export function noop(...args: ReadonlyArray<unknown>): void { // eslint-disable-line @typescript-eslint/no-unused-vars
     // pass
 }

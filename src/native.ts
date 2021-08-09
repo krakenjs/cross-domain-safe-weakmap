@@ -1,7 +1,4 @@
-/* @flow */
-
-export function hasNativeWeakMap() : boolean {
-
+export function hasNativeWeakMap(): boolean {
     if (typeof WeakMap === 'undefined') {
         return false;
     }
@@ -11,13 +8,10 @@ export function hasNativeWeakMap() : boolean {
     }
 
     try {
-
         const testWeakMap = new WeakMap();
         const testKey = {};
         const testValue = '__testvalue__';
-
         Object.freeze(testKey);
-
         testWeakMap.set(testKey, testValue);
 
         if (testWeakMap.get(testKey) === testValue) {
@@ -25,9 +19,7 @@ export function hasNativeWeakMap() : boolean {
         }
 
         return false;
-
     } catch (err) {
-
         return false;
     }
 }

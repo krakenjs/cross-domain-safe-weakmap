@@ -1,11 +1,6 @@
 {
-  "extends": "grumbler-scripts/tsconfig.json",
-  "include": ["src/**/*"],
-  "exclude": [
-    "/node_modules/"
-  ],
-  "compilerOptions": {
-    "outDir": "./dist",
-    "skipLibCheck": true
-  }
+    "extends": "grumbler-scripts/config/tsconfig.json",
+    "compilerOptions": {
+        "lib": ["DOM", "DOM.Iterable", "ESNext"]
+    }
 }

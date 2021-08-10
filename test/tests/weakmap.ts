@@ -2,7 +2,7 @@
 import { WeakMap } from '../../src';
 
 function getWindow(): Record<string, any> {
-    const win = {};
+    const win: any = {};
     win.self = win;
     win.closed = false;
     win.parent = win;
@@ -223,6 +223,7 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
 describe('weakmap standard cases with no native WeakMap', () => {
     it('should set and get a key', () => {
         const weakMap = window.WeakMap;
+        // @ts-ignore
         delete window.WeakMap;
         const map = new WeakMap();
         window.WeakMap = weakMap;
@@ -237,6 +238,7 @@ describe('weakmap standard cases with no native WeakMap', () => {
     });
     it('should get a non-existant key', () => {
         const weakMap = window.WeakMap;
+        // @ts-ignore
         delete window.WeakMap;
         const map = new WeakMap();
         window.WeakMap = weakMap;
@@ -249,6 +251,7 @@ describe('weakmap standard cases with no native WeakMap', () => {
     });
     it('should set over an existing key, and get a key', () => {
         const weakMap = window.WeakMap;
+        // @ts-ignore
         delete window.WeakMap;
         const map = new WeakMap();
         window.WeakMap = weakMap;
@@ -265,6 +268,7 @@ describe('weakmap standard cases with no native WeakMap', () => {
     });
     it('should set and check for a key', () => {
         const weakMap = window.WeakMap;
+        // @ts-ignore
         delete window.WeakMap;
         const map = new WeakMap();
         window.WeakMap = weakMap;
@@ -279,6 +283,7 @@ describe('weakmap standard cases with no native WeakMap', () => {
     });
     it('should check for a non-existant key', () => {
         const weakMap = window.WeakMap;
+        // @ts-ignore
         delete window.WeakMap;
         const map = new WeakMap();
         window.WeakMap = weakMap;
@@ -291,6 +296,7 @@ describe('weakmap standard cases with no native WeakMap', () => {
     });
     it('should set, delete, and check for a key', () => {
         const weakMap = window.WeakMap;
+        // @ts-ignore
         delete window.WeakMap;
         const map = new WeakMap();
         window.WeakMap = weakMap;
@@ -309,6 +315,7 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
     const win = getWindow();
     it('should set and get a key', () => {
         const weakMap = window.WeakMap;
+        // @ts-ignore
         delete window.WeakMap;
         const map = new WeakMap();
         window.WeakMap = weakMap;
@@ -323,6 +330,7 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
     });
     it('should get a non-existant key', () => {
         const weakMap = window.WeakMap;
+        // @ts-ignore
         delete window.WeakMap;
         const map = new WeakMap();
         window.WeakMap = weakMap;
@@ -335,6 +343,7 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
     });
     it('should set over an existing key, and get a key', () => {
         const weakMap = window.WeakMap;
+        // @ts-ignore
         delete window.WeakMap;
         const map = new WeakMap();
         window.WeakMap = weakMap;
@@ -351,6 +360,7 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
     });
     it('should set and check for a key', () => {
         const weakMap = window.WeakMap;
+        // @ts-ignore
         delete window.WeakMap;
         const map = new WeakMap();
         window.WeakMap = weakMap;
@@ -365,6 +375,7 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
     });
     it('should check for a non-existant key', () => {
         const weakMap = window.WeakMap;
+        // @ts-ignore
         delete window.WeakMap;
         const map = new WeakMap();
         window.WeakMap = weakMap;
@@ -377,6 +388,7 @@ describe('weakmap cross-origin cases with no native WeakMap', () => {
     });
     it('should set, delete, and check for a key', () => {
         const weakMap = window.WeakMap;
+        // @ts-ignore
         delete window.WeakMap;
         const map = new WeakMap();
         window.WeakMap = weakMap;

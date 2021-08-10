@@ -1,0 +1,8 @@
+{
+    "extends": "grumbler-scripts/config/tsconfig.build.json",
+    "include": ["src/**/*"],
+    "compilerOptions": {
+        "outDir": "./dist",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"]
+    }
+}

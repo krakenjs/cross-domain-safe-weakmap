@@ -31,6 +31,7 @@ export class CrossDomainSafeWeakMap<K extends Record<string, any>, V extends unk
         for (let i = 0; i < keys.length; i++) {
             const value = keys[i];
 
+            // @ts-ignore `isWindowClosed` takes window which V is not
             if (isWindow(value) && isWindowClosed(value)) {
                 if (weakmap) {
                     try {

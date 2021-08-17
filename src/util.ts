@@ -12,6 +12,7 @@ export function safeIndexOf<T>(collection: ReadonlyArray<T>, item: T): number {
     return -1;
 }
 
-export function noop(...args: ReadonlyArray<unknown>): void { // eslint-disable-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function noop(...args: ReadonlyArray<unknown>): void {
     // pass
 }

@@ -3,7 +3,10 @@ import { isWindow, isWindowClosed } from 'cross-domain-utils';
 import { hasNativeWeakMap } from './native';
 import { noop, safeIndexOf } from './util';
 
-export class CrossDomainSafeWeakMap<K extends Record<string, any>, V extends unknown> {
+export class CrossDomainSafeWeakMap<
+    K extends Record<string, any>,
+    V extends unknown
+> {
     name: string;
     weakmap: WeakMap<K, V> | null | undefined;
     keys: Array<K>;
@@ -11,12 +14,13 @@ export class CrossDomainSafeWeakMap<K extends Record<string, any>, V extends unk
 
     constructor() {
         // eslint-disable-next-line no-bitwise
-        this.name = `__weakmap_${ Math.random() * 1e9 >>> 0 }__`;
+        this.name = `__weakmap_${ (Math.random() * 1e9) >>> 0 }__`;
 
         if (hasNativeWeakMap()) {
             try {
                 this.weakmap = new WeakMap();
-            } catch (err) { // pass
+            } catch (err) {
+                // pass
             }
         }
 
@@ -36,7 +40,8 @@ export class CrossDomainSafeWeakMap<K extends Record<string, any>, V extends unk
                 if (weakmap) {
                     try {
                         weakmap.delete(value);
-                    } catch (err) { // pass
+                    } catch (err) {
+                        // pass
                     }
                 }
 
@@ -86,13 +91,14 @@ export class CrossDomainSafeWeakMap<K extends Record<string, any>, V extends unk
                     entry[1] = value;
                 } else {
                     Object.defineProperty(key, name, {
-                        value:    [ key, value ],
-                        writable: true
+                        value:   [ key, value ],
+                        writable:true
                     });
                 }
 
                 return;
-            } catch (err) { // pass
+            } catch (err) {
+                // pass
             }
         }
 
@@ -136,7 +142,8 @@ export class CrossDomainSafeWeakMap<K extends Record<string, any>, V extends unk
                 }
 
                 return;
-            } catch (err) { // pass
+            } catch (err) {
+                // pass
             }
         }
 
@@ -174,7 +181,8 @@ export class CrossDomainSafeWeakMap<K extends Record<string, any>, V extends unk
                 if (entry && entry[0] === key) {
                     entry[0] = entry[1] = undefined;
                 }
-            } catch (err) { // pass
+            } catch (err) {
+                // pass
             }
         }
 
@@ -215,7 +223,8 @@ export class CrossDomainSafeWeakMap<K extends Record<string, any>, V extends unk
                 }
 
                 return false;
-            } catch (err) { // pass
+            } catch (err) {
+                // pass
             }
         }
 
@@ -235,5 +244,4 @@ export class CrossDomainSafeWeakMap<K extends Record<string, any>, V extends unk
         this.set(key, value);
         return value;
     }
-
 }

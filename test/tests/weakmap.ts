@@ -152,7 +152,6 @@ describe('weakmap cross-origin cases with IE erroring window', () => {
         get() {
             throw new Error('Rargh can\'t do that I\'m IE ph34r me');
         }
-
     });
     it('should set and get a key', () => {
         const map = new WeakMap();

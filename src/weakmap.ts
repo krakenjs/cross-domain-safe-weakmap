@@ -3,14 +3,11 @@ import { isWindow, isWindowClosed } from 'cross-domain-utils';
 import { hasNativeWeakMap } from './native';
 import { noop, safeIndexOf } from './util';
 
-export class CrossDomainSafeWeakMap<
-    K extends Record<string, any>,
-    V extends unknown
-> {
-    name: string;
-    weakmap: WeakMap<K, V> | null | undefined;
-    keys: Array<K>;
-    values: Array<V>;
+export class CrossDomainSafeWeakMap<K extends Record<string, unknown>, V> {
+    name : string;
+    weakmap : WeakMap<K, V> | null | undefined;
+    keys : Array<K>;
+    values : Array<V>;
 
     constructor() {
         // eslint-disable-next-line no-bitwise
@@ -28,7 +25,7 @@ export class CrossDomainSafeWeakMap<
         this.values = [];
     }
 
-    _cleanupClosedWindows(): void {
+    _cleanupClosedWindows() : void {
         const weakmap = this.weakmap;
         const keys = this.keys;
 
@@ -52,7 +49,7 @@ export class CrossDomainSafeWeakMap<
         }
     }
 
-    isSafeToReadWrite(key: K): boolean {
+    isSafeToReadWrite(key : K) : boolean {
         if (isWindow(key)) {
             return false;
         }
@@ -67,7 +64,7 @@ export class CrossDomainSafeWeakMap<
         return true;
     }
 
-    set(key: K, value: V): void {
+    set(key : K, value : V) : void {
         if (!key) {
             throw new Error(`WeakMap expected key`);
         }
@@ -87,12 +84,14 @@ export class CrossDomainSafeWeakMap<
                 const name = this.name;
                 const entry = key[name];
 
+                // @ts-ignore
                 if (entry && entry[0] === key) {
+                    // @ts-ignore
                     entry[1] = value;
                 } else {
                     Object.defineProperty(key, name, {
-                        value:   [ key, value ],
-                        writable:true
+                        value:    [ key, value ],
+                        writable: true
                     });
                 }
 
@@ -116,7 +115,7 @@ export class CrossDomainSafeWeakMap<
         }
     }
 
-    get(key: K): V | void {
+    get(key : K) : V | undefined {
         if (!key) {
             throw new Error(`WeakMap expected key`);
         }
@@ -137,7 +136,9 @@ export class CrossDomainSafeWeakMap<
             try {
                 const entry = key[this.name];
 
+                // @ts-ignore
                 if (entry && entry[0] === key) {
+                    // @ts-ignore
                     return entry[1];
                 }
 
@@ -159,7 +160,7 @@ export class CrossDomainSafeWeakMap<
         return this.values[index];
     }
 
-    delete(key: K): void {
+    delete(key : K) : void {
         if (!key) {
             throw new Error(`WeakMap expected key`);
         }
@@ -178,7 +179,9 @@ export class CrossDomainSafeWeakMap<
             try {
                 const entry = key[this.name];
 
+                // @ts-ignore
                 if (entry && entry[0] === key) {
+                    // @ts-ignore
                     entry[0] = entry[1] = undefined;
                 }
             } catch (err) {
@@ -197,7 +200,7 @@ export class CrossDomainSafeWeakMap<
         }
     }
 
-    has(key: K): boolean {
+    has(key : K) : boolean {
         if (!key) {
             throw new Error(`WeakMap expected key`);
         }
@@ -218,6 +221,7 @@ export class CrossDomainSafeWeakMap<
             try {
                 const entry = key[this.name];
 
+                // @ts-ignore
                 if (entry && entry[0] === key) {
                     return true;
                 }
@@ -234,7 +238,7 @@ export class CrossDomainSafeWeakMap<
         return index !== -1;
     }
 
-    getOrSet(key: K, getter: () => V): V {
+    getOrSet(key : K, getter : () => V) : V {
         if (this.has(key)) {
             // @ts-ignore
             return this.get(key);

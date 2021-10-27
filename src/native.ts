@@ -1,4 +1,4 @@
-export function hasNativeWeakMap(): boolean {
+export function hasNativeWeakMap() : boolean {
     if (typeof WeakMap === 'undefined') {
         return false;
     }

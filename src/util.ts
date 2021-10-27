@@ -1,4 +1,4 @@
-export function safeIndexOf<T>(collection: ReadonlyArray<T>, item: T): number {
+export function safeIndexOf<T>(collection : ReadonlyArray<T>, item : T) : number {
     for (let i = 0; i < collection.length; i++) {
         try {
             if (collection[i] === item) {
@@ -13,6 +13,6 @@ export function safeIndexOf<T>(collection: ReadonlyArray<T>, item: T): number {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function noop(...args: ReadonlyArray<unknown>): void {
+export function noop(...args : ReadonlyArray<unknown>) : void {
     // pass
 }

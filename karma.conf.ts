@@ -1,5 +1,3 @@
-/* eslint import/no-nodejs-modules: off, import/no-default-export: off */
-
 import { getKarmaConfig } from 'grumbler-scripts/config/karma.conf';
 
 import { WEBPACK_CONFIG_TEST } from './webpack.config';

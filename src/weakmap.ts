@@ -139,7 +139,7 @@ export class CrossDomainSafeWeakMap<K extends Record<string, unknown>, V> {
                 // @ts-ignore
                 if (entry && entry[0] === key) {
                     // @ts-ignore
-                    return entry[1];
+                    return entry[1] as V;
                 }
 
                 return;

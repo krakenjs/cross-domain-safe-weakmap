@@ -2,13 +2,15 @@
 import { WeakMap } from '../../src';
 
 function getWindow() : Record<string, unknown> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    /* eslint-disable eslint-comments/no-unlimited-disable, unicorn/no-abusive-eslint-disable */
+    /* eslint-disable */
     const win : any = {};
     win.self = win;
     win.closed = false;
     win.parent = win;
     win.top = win;
     return win;
+    /* eslint-enable */
 }
 
 describe('weakmap standard cases', () => {

@@ -1,8 +1,12 @@
-// @ts-ignore
+/* eslint-disable eslint-comments/no-unlimited-disable, eslint-comments/disable-enable-pair, unicorn/no-abusive-eslint-disable */
+/* eslint-disable */
+
+// @ts-ignore karma doesnt exist on console natively
 window.console.karma = (...args) => {
-    // @ts-ignore
-    const karma = window.karma || (window.top && window.top.karma) || (window.opener && window.opener.karma);
-    karma.log('debug', args);
-    // eslint-disable-next-line no-console, @typescript-eslint/no-unsafe-argument
-    console.log(...args);
+    // @ts-ignore karma doesnt exist on window natively
+    const karma : Karma = window.karma || window.top?.karma || window.opener?.karma;
+
+    karma.log('debug', ...args);
+
+    console.log.apply(console, args);
 };

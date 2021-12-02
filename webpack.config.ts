@@ -9,6 +9,7 @@ export const MODULE_NAME = 'xdsweakmap';
 export const WEBPACK_CONFIG : WebpackConfig = getWebpackConfig({
     entry: './src/index.ts',
     filename:   `${ FILE_NAME }.js`,
+    minify: false,
     modulename: MODULE_NAME,
     vars:       {
         __MIN__:  false,

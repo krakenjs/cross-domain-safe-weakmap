@@ -4,6 +4,7 @@
 .*/node_modules/cross-domain-utils/dist
 .*/node_modules/cross-domain-utils/test
 .*/node_modules/npm
+.*/node_modules/resolve
 .*/dist/module
 [include]
 [libs]

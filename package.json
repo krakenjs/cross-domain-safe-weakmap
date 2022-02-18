@@ -46,6 +46,6 @@
     "mocha": "^4"
   },
   "dependencies": {
-    "cross-domain-utils": "^2.0.0"
+    "@krakenjs/cross-domain-utils": "^3.0.2"
   }
 }

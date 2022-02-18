@@ -1,8 +1,8 @@
 [ignore]
 .*/node_modules/babel-plugin-flow-runtime
 .*/node_modules/flow-runtime
-.*/node_modules/cross-domain-utils/dist
-.*/node_modules/cross-domain-utils/test
+.*/node_modules/@krakenjs/cross-domain-utils/dist
+.*/node_modules/@krakenjs/cross-domain-utils/test
 .*/node_modules/npm
 .*/node_modules/resolve
 .*/dist/module

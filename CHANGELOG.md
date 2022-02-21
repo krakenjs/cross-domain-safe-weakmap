@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/krakenjs/grumbler/compare/v2.0.0...v2.0.1) (2022-02-21)
+
+
+* check in dist folder changes ([67ba473](https://github.com/krakenjs/grumbler/commit/67ba473ea9c8677fd843e8078aa48a7a7025c604))
+* fix prerelease script ([8152388](https://github.com/krakenjs/grumbler/commit/8152388fdbf392e5fb65d24243217804905f2ae7))
+* hide 'ci' commits ([a4a510f](https://github.com/krakenjs/grumbler/commit/a4a510fec61a7c3d9373be7ddafc967b6f4010b1))
+* remove access token ([3711a52](https://github.com/krakenjs/grumbler/commit/3711a529c92c5a097d08cccfddd30b49426d0cf9))
+* remove publish script ([1de81bd](https://github.com/krakenjs/grumbler/commit/1de81bd2d6e14b261529de6a5ecb4f6ab687cd62))
+
 ## [2.0.0](https://github.com/krakenjs/grumbler/compare/v1.0.29...v2.0.0) (2022-02-21)
 
 

@@ -13,7 +13,7 @@
     "webpack": "babel-node --plugins=transform-es2015-modules-commonjs ./node_modules/.bin/webpack --progress",
     "test": "npm run lint && npm run flow-typed && npm run flow && npm run karma",
     "build": "npm run test && npm run babel && npm run webpack",
-    "prerelease": "npm run clean && npm run build && git add dist && git commit -m 'dist: check in dist folder'",
+    "prerelease": "npm run clean && npm run build && git add dist && git commit -m 'ci: check in dist folder'",
     "release": "standard-version",
     "postrelease": "git push && git push --follow-tags && npm publish",
     "clean": "rimraf dist coverage",
@@ -60,7 +60,7 @@
         "hidden": false
       },
       {
-        "type": "dist",
+        "type": "ci",
         "hidden": true
       }
     ]

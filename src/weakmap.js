@@ -7,12 +7,12 @@ import { noop, safeIndexOf } from './util';
 
 export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
 
-    name : string
-    weakmap : ?WeakMap<K, V>
+    name : string;
+    weakmap : ?WeakMap<K, V>;
     // eslint-disable-next-line flowtype/no-mutable-array
-    keys : Array<K>
+    keys : Array<K>;
     // eslint-disable-next-line flowtype/no-mutable-array
-    values : Array<V>
+    values : Array<V>;
 
     constructor() {
         // eslint-disable-next-line no-bitwise

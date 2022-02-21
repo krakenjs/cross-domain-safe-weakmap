@@ -2,7 +2,7 @@
   "name": "@krakenjs/cross-domain-safe-weakmap",
   "version": "1.0.29",
   "description": "Cross domain safe WeakMap.",
-  "main": "index.js",
+  "main": "dist/cross-domain-safe-weakmap.js",
   "scripts": {
     "setup": "npm install && npm run flow-typed",
     "lint": "eslint src/ test/ *.js",

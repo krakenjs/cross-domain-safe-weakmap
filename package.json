@@ -1,6 +1,6 @@
 {
   "name": "@krakenjs/cross-domain-safe-weakmap",
-  "version": "1.0.29",
+  "version": "2.0.0",
   "description": "Cross domain safe WeakMap.",
   "main": "dist/cross-domain-safe-weakmap.js",
   "scripts": {

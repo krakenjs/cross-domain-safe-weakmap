@@ -13,17 +13,53 @@
     "webpack": "babel-node --plugins=transform-es2015-modules-commonjs ./node_modules/.bin/webpack --progress",
     "test": "npm run lint && npm run flow-typed && npm run flow && npm run karma",
     "build": "npm run test && npm run babel && npm run webpack",
-    "release": "./publish.sh",
-    "release:patch": "./publish.sh patch",
-    "release:minor": "./publish.sh minor",
-    "release:major": "./publish.sh major",
+    "prerelease": "npm run clean && npm run test && npm run build",
+    "release": "standard-version",
+    "postrelease": "git push && git push --follow-tags && npm publish",
     "clean": "rimraf dist coverage",
     "reinstall": "rimraf flow-typed && rimraf node_modules && npm install && flow-typed install",
-    "debug": "cross-env NODE_ENV=debug"
+    "debug": "cross-env NODE_ENV=debug",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/krakenjs/grumbler.git"
+  },
+  "standard-version": {
+    "types": [
+      {
+        "type": "feat",
+        "section": "Features"
+      },
+      {
+        "type": "fix",
+        "section": "Bug Fixes"
+      },
+      {
+        "type": "chore",
+        "hidden": false
+      },
+      {
+        "type": "docs",
+        "hidden": false
+      },
+      {
+        "type": "style",
+        "hidden": false
+      },
+      {
+        "type": "refactor",
+        "hidden": false
+      },
+      {
+        "type": "perf",
+        "hidden": false
+      },
+      {
+        "type": "test",
+        "hidden": false
+      }
+    ]
   },
   "keywords": [
     "template"
@@ -36,9 +72,13 @@
   ],
   "readmeFilename": "README.md",
   "devDependencies": {
+    "@commitlint/cli": "^16.2.1",
+    "@commitlint/config-conventional": "^16.2.1",
     "flow-bin": "0.155.0",
     "grumbler-scripts": "^6",
-    "mocha": "^4"
+    "husky": "^7.0.0",
+    "mocha": "^4",
+    "standard-version": "^9.3.2"
   },
   "dependencies": {
     "@krakenjs/cross-domain-utils": "^3.0.2"

@@ -1,4 +1,4 @@
-name: "publish to npm"
+name: "publish alpha release to npm"
 on: workflow_dispatch
 jobs:
     main:

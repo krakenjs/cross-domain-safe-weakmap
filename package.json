@@ -78,13 +78,13 @@
   "devDependencies": {
     "@commitlint/cli": "^16.2.1",
     "@commitlint/config-conventional": "^16.2.1",
+    "@krakenjs/grumbler-scripts": "^6.0.2",
     "flow-bin": "0.155.0",
-    "grumbler-scripts": "^6",
     "husky": "^7.0.0",
     "mocha": "^4",
     "standard-version": "^9.3.2"
   },
   "dependencies": {
-    "cross-domain-utils": "^2.0.0"
+    "@krakenjs/cross-domain-utils": "^3.0.2"
   }
 }

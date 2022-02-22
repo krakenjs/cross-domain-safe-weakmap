@@ -85,6 +85,6 @@
     "standard-version": "^9.3.2"
   },
   "dependencies": {
-    "@krakenjs/cross-domain-utils": "^3.0.2"
+    "cross-domain-utils": "^2.0.0"
   }
 }

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.3](https://github.com/krakenjs/grumbler/compare/v2.0.2...v2.0.3) (2022-04-09)
+
+
+* update dependencies to krakenjs scope ([#9](https://github.com/krakenjs/grumbler/issues/9)) ([00d5281](https://github.com/krakenjs/grumbler/commit/00d52815a2fabba286655e41393f3b84881963c4))
+
 ### [2.0.2](https://github.com/krakenjs/grumbler/compare/v2.0.1...v2.0.2) (2022-02-21)
 
 

@@ -1,5 +1,4 @@
-Cross Domain Safe WeakMap
--------------------------
+## Cross Domain Safe WeakMap
 
 [![build status][build-badge]][build]
 [![code coverage][coverage-badge]][coverage]

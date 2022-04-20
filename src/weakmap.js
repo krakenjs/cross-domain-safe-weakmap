@@ -1,258 +1,248 @@
 /* @flow */
 
-import { isWindow, isWindowClosed } from '@krakenjs/cross-domain-utils/src';
+import { isWindow, isWindowClosed } from "@krakenjs/cross-domain-utils/src";
 
-import { hasNativeWeakMap } from './native';
-import { noop, safeIndexOf } from './util';
+import { hasNativeWeakMap } from "./native";
+import { noop, safeIndexOf } from "./util";
 
-export class CrossDomainSafeWeakMap<K : Object, V : mixed> {
+export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
+  name: string;
+  weakmap: ?WeakMap<K, V>;
+  // eslint-disable-next-line flowtype/no-mutable-array
+  keys: Array<K>;
+  // eslint-disable-next-line flowtype/no-mutable-array
+  values: Array<V>;
 
-    name : string;
-    weakmap : ?WeakMap<K, V>;
-    // eslint-disable-next-line flowtype/no-mutable-array
-    keys : Array<K>;
-    // eslint-disable-next-line flowtype/no-mutable-array
-    values : Array<V>;
+  constructor() {
+    // eslint-disable-next-line no-bitwise
+    this.name = `__weakmap_${(Math.random() * 1e9) >>> 0}__`;
 
-    constructor() {
-        // eslint-disable-next-line no-bitwise
-        this.name = `__weakmap_${ Math.random() * 1e9 >>> 0 }__`;
-
-        if (hasNativeWeakMap()) {
-            try {
-                this.weakmap = new WeakMap();
-            } catch (err) {
-                // pass
-            }
-        }
-
-        this.keys  = [];
-        this.values = [];
+    if (hasNativeWeakMap()) {
+      try {
+        this.weakmap = new WeakMap();
+      } catch (err) {
+        // pass
+      }
     }
 
-    _cleanupClosedWindows() {
+    this.keys = [];
+    this.values = [];
+  }
 
-        const weakmap = this.weakmap;
-        const keys = this.keys;
+  _cleanupClosedWindows() {
+    const weakmap = this.weakmap;
+    const keys = this.keys;
 
-        for (let i = 0; i < keys.length; i++) {
-            const value = keys[i];
+    for (let i = 0; i < keys.length; i++) {
+      const value = keys[i];
 
-            if (isWindow(value) && isWindowClosed(value)) {
-
-                if (weakmap) {
-                    try {
-                        weakmap.delete(value);
-                    } catch (err) {
-                        // pass
-                    }
-                }
-
-                keys.splice(i, 1);
-                this.values.splice(i, 1);
-
-                i -= 1;
-            }
-        }
-    }
-
-    isSafeToReadWrite(key : K) : boolean {
-
-        if (isWindow(key)) {
-            return false;
-        }
-
-        try {
-            noop(key && key.self);
-            noop(key && key[this.name]);
-        } catch (err) {
-            return false;
-        }
-
-        return true;
-    }
-
-    set(key : K, value : V) {
-
-        if (!key) {
-            throw new Error(`WeakMap expected key`);
-        }
-
-        const weakmap = this.weakmap;
-
+      if (isWindow(value) && isWindowClosed(value)) {
         if (weakmap) {
-            try {
-                weakmap.set(key, value);
-            } catch (err) {
-                delete this.weakmap;
-            }
+          try {
+            weakmap.delete(value);
+          } catch (err) {
+            // pass
+          }
         }
 
-        if (this.isSafeToReadWrite(key)) {
-            try {
-                const name = this.name;
-                const entry = key[name];
+        keys.splice(i, 1);
+        this.values.splice(i, 1);
 
-                if (entry && entry[0] === key) {
-                    entry[1] = value;
-                } else {
-                    Object.defineProperty(key, name, {
-                        value:    [ key, value ],
-                        writable: true
-                    });
-                }
+        i -= 1;
+      }
+    }
+  }
 
-                return;
+  isSafeToReadWrite(key: K): boolean {
+    if (isWindow(key)) {
+      return false;
+    }
 
-            } catch (err) {
-                // pass
-            }
-        }
+    try {
+      noop(key && key.self);
+      noop(key && key[this.name]);
+    } catch (err) {
+      return false;
+    }
 
-        this._cleanupClosedWindows();
+    return true;
+  }
 
-        const keys = this.keys;
-        const values = this.values;
-        const index = safeIndexOf(keys, key);
+  set(key: K, value: V) {
+    if (!key) {
+      throw new Error(`WeakMap expected key`);
+    }
 
-        if (index === -1) {
-            keys.push(key);
-            values.push(value);
+    const weakmap = this.weakmap;
+
+    if (weakmap) {
+      try {
+        weakmap.set(key, value);
+      } catch (err) {
+        delete this.weakmap;
+      }
+    }
+
+    if (this.isSafeToReadWrite(key)) {
+      try {
+        const name = this.name;
+        const entry = key[name];
+
+        if (entry && entry[0] === key) {
+          entry[1] = value;
         } else {
-            values[index] = value;
+          Object.defineProperty(key, name, {
+            value: [key, value],
+            writable: true,
+          });
         }
+
+        return;
+      } catch (err) {
+        // pass
+      }
     }
 
-    get(key : K) : V | void {
+    this._cleanupClosedWindows();
 
-        if (!key) {
-            throw new Error(`WeakMap expected key`);
-        }
+    const keys = this.keys;
+    const values = this.values;
+    const index = safeIndexOf(keys, key);
 
-        const weakmap = this.weakmap;
+    if (index === -1) {
+      keys.push(key);
+      values.push(value);
+    } else {
+      values[index] = value;
+    }
+  }
 
-        if (weakmap) {
-            try {
-                if (weakmap.has(key)) {
-                    return weakmap.get(key);
-                }
-
-            } catch (err) {
-                delete this.weakmap;
-            }
-        }
-
-        if (this.isSafeToReadWrite(key)) {
-            try {
-                const entry = key[this.name];
-
-                if (entry && entry[0] === key) {
-                    return entry[1];
-                }
-
-                return;
-            } catch (err) {
-                // pass
-            }
-        }
-
-        this._cleanupClosedWindows();
-
-        const keys = this.keys;
-        const index = safeIndexOf(keys, key);
-
-        if (index === -1) {
-            return;
-        }
-
-        return this.values[index];
+  get(key: K): V | void {
+    if (!key) {
+      throw new Error(`WeakMap expected key`);
     }
 
-    delete(key : K) {
+    const weakmap = this.weakmap;
 
-        if (!key) {
-            throw new Error(`WeakMap expected key`);
+    if (weakmap) {
+      try {
+        if (weakmap.has(key)) {
+          return weakmap.get(key);
         }
-
-        const weakmap = this.weakmap;
-
-        if (weakmap) {
-            try {
-                weakmap.delete(key);
-            } catch (err) {
-                delete this.weakmap;
-            }
-        }
-
-        if (this.isSafeToReadWrite(key)) {
-            try {
-                const entry = key[this.name];
-
-                if (entry && entry[0] === key) {
-                    entry[0] = entry[1] = undefined;
-                }
-            } catch (err) {
-                // pass
-            }
-        }
-
-        this._cleanupClosedWindows();
-
-        const keys = this.keys;
-        const index = safeIndexOf(keys, key);
-
-        if (index !== -1) {
-            keys.splice(index, 1);
-            this.values.splice(index, 1);
-        }
+      } catch (err) {
+        delete this.weakmap;
+      }
     }
 
-    has(key : K) : boolean {
+    if (this.isSafeToReadWrite(key)) {
+      try {
+        const entry = key[this.name];
 
-        if (!key) {
-            throw new Error(`WeakMap expected key`);
+        if (entry && entry[0] === key) {
+          return entry[1];
         }
 
-        const weakmap = this.weakmap;
-
-        if (weakmap) {
-            try {
-                if (weakmap.has(key)) {
-                    return true;
-                }
-            } catch (err) {
-                delete this.weakmap;
-            }
-        }
-
-        if (this.isSafeToReadWrite(key)) {
-            try {
-                const entry = key[this.name];
-
-                if (entry && entry[0] === key) {
-                    return true;
-                }
-
-                return false;
-            } catch (err) {
-                // pass
-            }
-        }
-
-        this._cleanupClosedWindows();
-
-        const index = safeIndexOf(this.keys, key);
-        return index !== -1;
+        return;
+      } catch (err) {
+        // pass
+      }
     }
 
-    getOrSet(key : K, getter : () => V) : V {
-        if (this.has(key)) {
-            // $FlowFixMe
-            return this.get(key);
+    this._cleanupClosedWindows();
+
+    const keys = this.keys;
+    const index = safeIndexOf(keys, key);
+
+    if (index === -1) {
+      return;
+    }
+
+    return this.values[index];
+  }
+
+  delete(key: K) {
+    if (!key) {
+      throw new Error(`WeakMap expected key`);
+    }
+
+    const weakmap = this.weakmap;
+
+    if (weakmap) {
+      try {
+        weakmap.delete(key);
+      } catch (err) {
+        delete this.weakmap;
+      }
+    }
+
+    if (this.isSafeToReadWrite(key)) {
+      try {
+        const entry = key[this.name];
+
+        if (entry && entry[0] === key) {
+          entry[0] = entry[1] = undefined;
+        }
+      } catch (err) {
+        // pass
+      }
+    }
+
+    this._cleanupClosedWindows();
+
+    const keys = this.keys;
+    const index = safeIndexOf(keys, key);
+
+    if (index !== -1) {
+      keys.splice(index, 1);
+      this.values.splice(index, 1);
+    }
+  }
+
+  has(key: K): boolean {
+    if (!key) {
+      throw new Error(`WeakMap expected key`);
+    }
+
+    const weakmap = this.weakmap;
+
+    if (weakmap) {
+      try {
+        if (weakmap.has(key)) {
+          return true;
+        }
+      } catch (err) {
+        delete this.weakmap;
+      }
+    }
+
+    if (this.isSafeToReadWrite(key)) {
+      try {
+        const entry = key[this.name];
+
+        if (entry && entry[0] === key) {
+          return true;
         }
 
-        const value = getter();
-        this.set(key, value);
-        return value;
+        return false;
+      } catch (err) {
+        // pass
+      }
     }
+
+    this._cleanupClosedWindows();
+
+    const index = safeIndexOf(this.keys, key);
+    return index !== -1;
+  }
+
+  getOrSet(key: K, getter: () => V): V {
+    if (this.has(key)) {
+      // $FlowFixMe
+      return this.get(key);
+    }
+
+    const value = getter();
+    this.set(key, value);
+    return value;
+  }
 }

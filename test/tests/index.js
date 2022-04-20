@@ -1,3 +1,3 @@
 /* @flow */
 
-import './weakmap';
+import "./weakmap";

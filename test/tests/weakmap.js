@@ -1,526 +1,489 @@
 /* @flow */
 /* eslint max-lines: 0 */
 
-import { WeakMap } from '../../src';
+import { WeakMap } from "../../src";
 
-function getWindow() : Object {
-    const win = {};
-    win.self = win;
-    win.closed = false;
-    win.parent = win;
-    win.top = win;
-    return win;
+function getWindow(): Object {
+  const win = {};
+  win.self = win;
+  win.closed = false;
+  win.parent = win;
+  win.top = win;
+  return win;
 }
 
-describe('weakmap standard cases', () => {
+describe("weakmap standard cases", () => {
+  it("should set and get a key", () => {
+    const map = new WeakMap();
+    const obj = {};
+    const val = "foo";
 
-    it('should set and get a key', () => {
+    map.set(obj, val);
 
-        const map = new WeakMap();
-        const obj = {};
-        const val = 'foo';
+    const result = map.get(obj);
 
-        map.set(obj, val);
+    if (result !== val) {
+      throw new Error(`Expected ${result || ""} to be '${val}'`);
+    }
+  });
 
-        const result = map.get(obj);
+  it("should get a non-existant key", () => {
+    const map = new WeakMap();
+    const obj = {};
 
-        if (result !== val) {
-            throw new Error(`Expected ${ result || '' } to be '${ val }'`);
-        }
-    });
+    const result = map.get(obj);
 
-    it('should get a non-existant key', () => {
+    if (result !== undefined) {
+      throw new Error(`Expected result to be undefined`);
+    }
+  });
 
-        const map = new WeakMap();
-        const obj = {};
+  it("should set over an existing key, and get a key", () => {
+    const map = new WeakMap();
+    const obj = {};
+    const val1 = "foo";
+    const val2 = "bar";
 
-        const result = map.get(obj);
+    map.set(obj, val1);
+    map.set(obj, val2);
 
-        if (result !== undefined) {
-            throw new Error(`Expected result to be undefined`);
-        }
-    });
+    const result = map.get(obj);
 
+    if (result !== val2) {
+      throw new Error(`Expected ${result || ""} to be '${val2}'`);
+    }
+  });
 
-    it('should set over an existing key, and get a key', () => {
+  it("should set and check for a key", () => {
+    const map = new WeakMap();
+    const obj = {};
+    const val = "foo";
 
-        const map = new WeakMap();
-        const obj = {};
-        const val1 = 'foo';
-        const val2 = 'bar';
+    map.set(obj, val);
 
-        map.set(obj, val1);
-        map.set(obj, val2);
+    const result = map.has(obj);
 
-        const result = map.get(obj);
+    if (!result) {
+      throw new Error(`Expected ${result.toString()} to be true`);
+    }
+  });
 
-        if (result !== val2) {
-            throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
-        }
-    });
+  it("should check for a non-existant key", () => {
+    const map = new WeakMap();
+    const obj = {};
 
-    it('should set and check for a key', () => {
+    const result = map.has(obj);
 
-        const map = new WeakMap();
-        const obj = {};
-        const val = 'foo';
+    if (result) {
+      throw new Error(`Expected ${result.toString()} to be false`);
+    }
+  });
 
-        map.set(obj, val);
+  it("should set, delete, and check for a key", () => {
+    const map = new WeakMap();
+    const obj = {};
+    const val = "foo";
 
-        const result = map.has(obj);
+    map.set(obj, val);
+    map.delete(obj);
 
-        if (!result) {
-            throw new Error(`Expected ${ result.toString() } to be true`);
-        }
-    });
+    const result = map.has(obj);
 
-    it('should check for a non-existant key', () => {
-
-        const map = new WeakMap();
-        const obj = {};
-
-        const result = map.has(obj);
-
-        if (result) {
-            throw new Error(`Expected ${ result.toString() } to be false`);
-        }
-    });
-
-    it('should set, delete, and check for a key', () => {
-
-        const map = new WeakMap();
-        const obj = {};
-        const val = 'foo';
-
-        map.set(obj, val);
-        map.delete(obj);
-
-        const result = map.has(obj);
-
-        if (result) {
-            throw new Error(`Expected ${ result.toString() } to be false`);
-        }
-    });
+    if (result) {
+      throw new Error(`Expected ${result.toString()} to be false`);
+    }
+  });
 });
 
-describe('weakmap cross-origin cases', () => {
+describe("weakmap cross-origin cases", () => {
+  const win = getWindow();
 
-    const win = getWindow();
+  it("should set and get a key", () => {
+    const map = new WeakMap();
+    const obj = win;
+    const val = "foo";
 
-    it('should set and get a key', () => {
+    map.set(obj, val);
 
-        const map = new WeakMap();
-        const obj = win;
-        const val = 'foo';
+    const result = map.get(obj);
 
-        map.set(obj, val);
+    if (result !== val) {
+      throw new Error(`Expected ${result || ""} to be '${val}'`);
+    }
+  });
 
-        const result = map.get(obj);
+  it("should get a non-existant key", () => {
+    const map = new WeakMap();
+    const obj = win;
 
-        if (result !== val) {
-            throw new Error(`Expected ${ result || '' } to be '${ val }'`);
-        }
-    });
+    const result = map.get(obj);
 
-    it('should get a non-existant key', () => {
+    if (result !== undefined) {
+      throw new Error(`Expected result to be undefined`);
+    }
+  });
 
-        const map = new WeakMap();
-        const obj = win;
+  it("should set over an existing key, and get a key", () => {
+    const map = new WeakMap();
+    const obj = win;
+    const val1 = "foo";
+    const val2 = "bar";
 
-        const result = map.get(obj);
+    map.set(obj, val1);
+    map.set(obj, val2);
 
-        if (result !== undefined) {
-            throw new Error(`Expected result to be undefined`);
-        }
-    });
+    const result = map.get(obj);
 
-    it('should set over an existing key, and get a key', () => {
+    if (result !== val2) {
+      throw new Error(`Expected ${result || ""} to be '${val2}'`);
+    }
+  });
 
-        const map = new WeakMap();
-        const obj = win;
-        const val1 = 'foo';
-        const val2 = 'bar';
+  it("should set and check for a key", () => {
+    const map = new WeakMap();
+    const obj = win;
+    const val = "foo";
 
-        map.set(obj, val1);
-        map.set(obj, val2);
+    map.set(obj, val);
 
-        const result = map.get(obj);
+    const result = map.has(obj);
 
-        if (result !== val2) {
-            throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
-        }
-    });
+    if (!result) {
+      throw new Error(`Expected ${result.toString()} to be true`);
+    }
+  });
 
-    it('should set and check for a key', () => {
+  it("should check for a non-existant key", () => {
+    const map = new WeakMap();
+    const obj = win;
 
-        const map = new WeakMap();
-        const obj = win;
-        const val = 'foo';
+    const result = map.has(obj);
 
-        map.set(obj, val);
+    if (result) {
+      throw new Error(`Expected ${result.toString()} to be false`);
+    }
+  });
 
-        const result = map.has(obj);
+  it("should set, delete, and check for a key", () => {
+    const map = new WeakMap();
+    const obj = win;
+    const val = "foo";
 
-        if (!result) {
-            throw new Error(`Expected ${ result.toString() } to be true`);
-        }
-    });
+    map.set(obj, val);
+    map.delete(obj);
 
-    it('should check for a non-existant key', () => {
+    const result = map.has(obj);
 
-        const map = new WeakMap();
-        const obj = win;
-
-        const result = map.has(obj);
-
-        if (result) {
-            throw new Error(`Expected ${ result.toString() } to be false`);
-        }
-    });
-
-    it('should set, delete, and check for a key', () => {
-
-        const map = new WeakMap();
-        const obj = win;
-        const val = 'foo';
-
-        map.set(obj, val);
-        map.delete(obj);
-
-        const result = map.has(obj);
-
-        if (result) {
-            throw new Error(`Expected ${ result.toString() } to be false`);
-        }
-    });
+    if (result) {
+      throw new Error(`Expected ${result.toString()} to be false`);
+    }
+  });
 });
 
-describe('weakmap cross-origin cases with IE erroring window', () => {
+describe("weakmap cross-origin cases with IE erroring window", () => {
+  const win = getWindow();
 
-    const win = getWindow();
+  // $FlowFixMe
+  Object.defineProperty(win, "self", {
+    get() {
+      throw new Error("Rargh can't do that I'm IE ph34r me");
+    },
+  });
 
-    // $FlowFixMe
-    Object.defineProperty(win, 'self', {
-        get() {
-            throw new Error('Rargh can\'t do that I\'m IE ph34r me');
-        }
-    });
+  it("should set and get a key", () => {
+    const map = new WeakMap();
+    const obj = win;
+    const val = "foo";
 
-    it('should set and get a key', () => {
+    map.set(obj, val);
 
-        const map = new WeakMap();
-        const obj = win;
-        const val = 'foo';
+    const result = map.get(obj);
 
-        map.set(obj, val);
+    if (result !== val) {
+      throw new Error(`Expected ${result || ""} to be '${val}'`);
+    }
+  });
 
-        const result = map.get(obj);
+  it("should get a non-existant key", () => {
+    const map = new WeakMap();
+    const obj = win;
 
-        if (result !== val) {
-            throw new Error(`Expected ${ result || '' } to be '${ val }'`);
-        }
-    });
+    const result = map.get(obj);
 
-    it('should get a non-existant key', () => {
+    if (result !== undefined) {
+      throw new Error(`Expected result to be undefined`);
+    }
+  });
 
-        const map = new WeakMap();
-        const obj = win;
+  it("should set over an existing key, and get a key", () => {
+    const map = new WeakMap();
+    const obj = win;
+    const val1 = "foo";
+    const val2 = "bar";
 
-        const result = map.get(obj);
+    map.set(obj, val1);
+    map.set(obj, val2);
 
-        if (result !== undefined) {
-            throw new Error(`Expected result to be undefined`);
-        }
-    });
+    const result = map.get(obj);
 
-    it('should set over an existing key, and get a key', () => {
+    if (result !== val2) {
+      throw new Error(`Expected ${result || ""} to be '${val2}'`);
+    }
+  });
 
-        const map = new WeakMap();
-        const obj = win;
-        const val1 = 'foo';
-        const val2 = 'bar';
+  it("should set and check for a key", () => {
+    const map = new WeakMap();
+    const obj = win;
+    const val = "foo";
 
-        map.set(obj, val1);
-        map.set(obj, val2);
+    map.set(obj, val);
 
-        const result = map.get(obj);
+    const result = map.has(obj);
 
-        if (result !== val2) {
-            throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
-        }
-    });
+    if (!result) {
+      throw new Error(`Expected ${result.toString()} to be true`);
+    }
+  });
 
-    it('should set and check for a key', () => {
+  it("should check for a non-existant key", () => {
+    const map = new WeakMap();
+    const obj = win;
 
-        const map = new WeakMap();
-        const obj = win;
-        const val = 'foo';
+    const result = map.has(obj);
 
-        map.set(obj, val);
+    if (result) {
+      throw new Error(`Expected ${result.toString()} to be false`);
+    }
+  });
 
-        const result = map.has(obj);
+  it("should set, delete, and check for a key", () => {
+    const map = new WeakMap();
+    const obj = win;
+    const val = "foo";
 
-        if (!result) {
-            throw new Error(`Expected ${ result.toString() } to be true`);
-        }
-    });
+    map.set(obj, val);
+    map.delete(obj);
 
-    it('should check for a non-existant key', () => {
+    const result = map.has(obj);
 
-        const map = new WeakMap();
-        const obj = win;
-
-        const result = map.has(obj);
-
-        if (result) {
-            throw new Error(`Expected ${ result.toString() } to be false`);
-        }
-    });
-
-    it('should set, delete, and check for a key', () => {
-
-        const map = new WeakMap();
-        const obj = win;
-        const val = 'foo';
-
-        map.set(obj, val);
-        map.delete(obj);
-
-        const result = map.has(obj);
-
-        if (result) {
-            throw new Error(`Expected ${ result.toString() } to be false`);
-        }
-    });
+    if (result) {
+      throw new Error(`Expected ${result.toString()} to be false`);
+    }
+  });
 });
 
-describe('weakmap standard cases with no native WeakMap', () => {
+describe("weakmap standard cases with no native WeakMap", () => {
+  it("should set and get a key", () => {
+    const weakMap = window.WeakMap;
+    delete window.WeakMap;
+    const map = new WeakMap();
+    window.WeakMap = weakMap;
 
-    it('should set and get a key', () => {
+    const obj = {};
+    const val = "foo";
 
-        const weakMap = window.WeakMap;
-        delete window.WeakMap;
-        const map = new WeakMap();
-        window.WeakMap = weakMap;
+    map.set(obj, val);
 
-        const obj = {};
-        const val = 'foo';
+    const result = map.get(obj);
 
-        map.set(obj, val);
+    if (result !== val) {
+      throw new Error(`Expected ${result || ""} to be '${val}'`);
+    }
+  });
 
-        const result = map.get(obj);
+  it("should get a non-existant key", () => {
+    const weakMap = window.WeakMap;
+    delete window.WeakMap;
+    const map = new WeakMap();
+    window.WeakMap = weakMap;
 
-        if (result !== val) {
-            throw new Error(`Expected ${ result || '' } to be '${ val }'`);
-        }
-    });
+    const obj = {};
 
-    it('should get a non-existant key', () => {
+    const result = map.get(obj);
 
-        const weakMap = window.WeakMap;
-        delete window.WeakMap;
-        const map = new WeakMap();
-        window.WeakMap = weakMap;
+    if (result !== undefined) {
+      throw new Error(`Expected result to be undefined`);
+    }
+  });
 
-        const obj = {};
+  it("should set over an existing key, and get a key", () => {
+    const weakMap = window.WeakMap;
+    delete window.WeakMap;
+    const map = new WeakMap();
+    window.WeakMap = weakMap;
 
-        const result = map.get(obj);
+    const obj = {};
+    const val1 = "foo";
+    const val2 = "bar";
 
-        if (result !== undefined) {
-            throw new Error(`Expected result to be undefined`);
-        }
-    });
+    map.set(obj, val1);
+    map.set(obj, val2);
 
+    const result = map.get(obj);
 
-    it('should set over an existing key, and get a key', () => {
+    if (result !== val2) {
+      throw new Error(`Expected ${result || ""} to be '${val2}'`);
+    }
+  });
 
-        const weakMap = window.WeakMap;
-        delete window.WeakMap;
-        const map = new WeakMap();
-        window.WeakMap = weakMap;
+  it("should set and check for a key", () => {
+    const weakMap = window.WeakMap;
+    delete window.WeakMap;
+    const map = new WeakMap();
+    window.WeakMap = weakMap;
 
-        const obj = {};
-        const val1 = 'foo';
-        const val2 = 'bar';
+    const obj = {};
+    const val = "foo";
 
-        map.set(obj, val1);
-        map.set(obj, val2);
+    map.set(obj, val);
 
-        const result = map.get(obj);
+    const result = map.has(obj);
 
-        if (result !== val2) {
-            throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
-        }
-    });
+    if (!result) {
+      throw new Error(`Expected ${result.toString()} to be true`);
+    }
+  });
 
-    it('should set and check for a key', () => {
+  it("should check for a non-existant key", () => {
+    const weakMap = window.WeakMap;
+    delete window.WeakMap;
+    const map = new WeakMap();
+    window.WeakMap = weakMap;
 
-        const weakMap = window.WeakMap;
-        delete window.WeakMap;
-        const map = new WeakMap();
-        window.WeakMap = weakMap;
+    const obj = {};
 
-        const obj = {};
-        const val = 'foo';
+    const result = map.has(obj);
 
-        map.set(obj, val);
+    if (result) {
+      throw new Error(`Expected ${result.toString()} to be false`);
+    }
+  });
 
-        const result = map.has(obj);
+  it("should set, delete, and check for a key", () => {
+    const weakMap = window.WeakMap;
+    delete window.WeakMap;
+    const map = new WeakMap();
+    window.WeakMap = weakMap;
 
-        if (!result) {
-            throw new Error(`Expected ${ result.toString() } to be true`);
-        }
-    });
+    const obj = {};
+    const val = "foo";
 
-    it('should check for a non-existant key', () => {
+    map.set(obj, val);
+    map.delete(obj);
 
-        const weakMap = window.WeakMap;
-        delete window.WeakMap;
-        const map = new WeakMap();
-        window.WeakMap = weakMap;
+    const result = map.has(obj);
 
-        const obj = {};
-
-        const result = map.has(obj);
-
-        if (result) {
-            throw new Error(`Expected ${ result.toString() } to be false`);
-        }
-    });
-
-    it('should set, delete, and check for a key', () => {
-
-        const weakMap = window.WeakMap;
-        delete window.WeakMap;
-        const map = new WeakMap();
-        window.WeakMap = weakMap;
-
-        const obj = {};
-        const val = 'foo';
-
-        map.set(obj, val);
-        map.delete(obj);
-
-        const result = map.has(obj);
-
-        if (result) {
-            throw new Error(`Expected ${ result.toString() } to be false`);
-        }
-    });
+    if (result) {
+      throw new Error(`Expected ${result.toString()} to be false`);
+    }
+  });
 });
 
-describe('weakmap cross-origin cases with no native WeakMap', () => {
+describe("weakmap cross-origin cases with no native WeakMap", () => {
+  const win = getWindow();
 
-    const win = getWindow();
+  it("should set and get a key", () => {
+    const weakMap = window.WeakMap;
+    delete window.WeakMap;
+    const map = new WeakMap();
+    window.WeakMap = weakMap;
 
-    it('should set and get a key', () => {
+    const obj = win;
+    const val = "foo";
 
-        const weakMap = window.WeakMap;
-        delete window.WeakMap;
-        const map = new WeakMap();
-        window.WeakMap = weakMap;
+    map.set(obj, val);
 
-        const obj = win;
-        const val = 'foo';
+    const result = map.get(obj);
 
-        map.set(obj, val);
+    if (result !== val) {
+      throw new Error(`Expected ${result || ""} to be '${val}'`);
+    }
+  });
 
-        const result = map.get(obj);
+  it("should get a non-existant key", () => {
+    const weakMap = window.WeakMap;
+    delete window.WeakMap;
+    const map = new WeakMap();
+    window.WeakMap = weakMap;
 
-        if (result !== val) {
-            throw new Error(`Expected ${ result || '' } to be '${ val }'`);
-        }
-    });
+    const obj = win;
 
-    it('should get a non-existant key', () => {
+    const result = map.get(obj);
 
-        const weakMap = window.WeakMap;
-        delete window.WeakMap;
-        const map = new WeakMap();
-        window.WeakMap = weakMap;
+    if (result !== undefined) {
+      throw new Error(`Expected result to be undefined`);
+    }
+  });
 
-        const obj = win;
+  it("should set over an existing key, and get a key", () => {
+    const weakMap = window.WeakMap;
+    delete window.WeakMap;
+    const map = new WeakMap();
+    window.WeakMap = weakMap;
 
-        const result = map.get(obj);
+    const obj = win;
+    const val1 = "foo";
+    const val2 = "bar";
 
-        if (result !== undefined) {
-            throw new Error(`Expected result to be undefined`);
-        }
-    });
+    map.set(obj, val1);
+    map.set(obj, val2);
 
-    it('should set over an existing key, and get a key', () => {
+    const result = map.get(obj);
 
-        const weakMap = window.WeakMap;
-        delete window.WeakMap;
-        const map = new WeakMap();
-        window.WeakMap = weakMap;
+    if (result !== val2) {
+      throw new Error(`Expected ${result || ""} to be '${val2}'`);
+    }
+  });
 
-        const obj = win;
-        const val1 = 'foo';
-        const val2 = 'bar';
+  it("should set and check for a key", () => {
+    const weakMap = window.WeakMap;
+    delete window.WeakMap;
+    const map = new WeakMap();
+    window.WeakMap = weakMap;
 
-        map.set(obj, val1);
-        map.set(obj, val2);
+    const obj = win;
+    const val = "foo";
 
-        const result = map.get(obj);
+    map.set(obj, val);
 
-        if (result !== val2) {
-            throw new Error(`Expected ${ result || '' } to be '${ val2 }'`);
-        }
-    });
+    const result = map.has(obj);
 
-    it('should set and check for a key', () => {
+    if (!result) {
+      throw new Error(`Expected ${result.toString()} to be true`);
+    }
+  });
 
-        const weakMap = window.WeakMap;
-        delete window.WeakMap;
-        const map = new WeakMap();
-        window.WeakMap = weakMap;
+  it("should check for a non-existant key", () => {
+    const weakMap = window.WeakMap;
+    delete window.WeakMap;
+    const map = new WeakMap();
+    window.WeakMap = weakMap;
 
-        const obj = win;
-        const val = 'foo';
+    const obj = win;
 
-        map.set(obj, val);
+    const result = map.has(obj);
 
-        const result = map.has(obj);
+    if (result) {
+      throw new Error(`Expected ${result.toString()} to be false`);
+    }
+  });
 
-        if (!result) {
-            throw new Error(`Expected ${ result.toString() } to be true`);
-        }
-    });
+  it("should set, delete, and check for a key", () => {
+    const weakMap = window.WeakMap;
+    delete window.WeakMap;
+    const map = new WeakMap();
+    window.WeakMap = weakMap;
 
-    it('should check for a non-existant key', () => {
+    const obj = win;
+    const val = "foo";
 
-        const weakMap = window.WeakMap;
-        delete window.WeakMap;
-        const map = new WeakMap();
-        window.WeakMap = weakMap;
+    map.set(obj, val);
+    map.delete(obj);
 
-        const obj = win;
+    const result = map.has(obj);
 
-        const result = map.has(obj);
-
-        if (result) {
-            throw new Error(`Expected ${ result.toString() } to be false`);
-        }
-    });
-
-    it('should set, delete, and check for a key', () => {
-
-        const weakMap = window.WeakMap;
-        delete window.WeakMap;
-        const map = new WeakMap();
-        window.WeakMap = weakMap;
-
-        const obj = win;
-        const val = 'foo';
-
-        map.set(obj, val);
-        map.delete(obj);
-
-        const result = map.has(obj);
-
-        if (result) {
-            throw new Error(`Expected ${ result.toString() } to be false`);
-        }
-    });
+    if (result) {
+      throw new Error(`Expected ${result.toString()} to be false`);
+    }
+  });
 });

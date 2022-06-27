@@ -1,3 +1,3 @@
 /* @flow */
 
-export { CrossDomainSafeWeakMap as WeakMap } from './weakmap';
+export { CrossDomainSafeWeakMap as WeakMap } from "./weakmap";

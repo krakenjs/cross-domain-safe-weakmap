@@ -1,17 +1,16 @@
-/* @flow */
-
-import { isWindow, isWindowClosed } from "@krakenjs/cross-domain-utils/src";
+import {
+  isWindow,
+  isWindowClosed,
+} from "@krakenjs/cross-domain-utils/dist/esm";
 
 import { hasNativeWeakMap } from "./native";
 import { noop, safeIndexOf } from "./util";
 
-export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
+export class CrossDomainSafeWeakMap<K extends Record<string, unknown>, V> {
   name: string;
-  weakmap: ?WeakMap<K, V>;
-  // eslint-disable-next-line flowtype/no-mutable-array
-  keys: Array<K>;
-  // eslint-disable-next-line flowtype/no-mutable-array
-  values: Array<V>;
+  weakmap: WeakMap<K, V> | undefined;
+  keys: K[];
+  values: V[];
 
   constructor() {
     // eslint-disable-next-line no-bitwise
@@ -19,7 +18,7 @@ export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
 
     if (hasNativeWeakMap()) {
       try {
-        this.weakmap = new WeakMap();
+        this.weakmap = new WeakMap<K, V>();
       } catch (err) {
         // pass
       }
@@ -29,13 +28,14 @@ export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
     this.values = [];
   }
 
-  _cleanupClosedWindows() {
+  _cleanupClosedWindows(): void {
     const weakmap = this.weakmap;
     const keys = this.keys;
 
     for (let i = 0; i < keys.length; i++) {
       const value = keys[i];
 
+      // @ts-expect-error `isWindowClosed` takes window which V is not
       if (isWindow(value) && isWindowClosed(value)) {
         if (weakmap) {
           try {
@@ -47,7 +47,6 @@ export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
 
         keys.splice(i, 1);
         this.values.splice(i, 1);
-
         i -= 1;
       }
     }
@@ -68,7 +67,7 @@ export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
     return true;
   }
 
-  set(key: K, value: V) {
+  set(key: K, value: V): void {
     if (!key) {
       throw new Error(`WeakMap expected key`);
     }
@@ -88,7 +87,9 @@ export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
         const name = this.name;
         const entry = key[name];
 
+        // @ts-expect-error entry is implicitly an any so cant index
         if (entry && entry[0] === key) {
+          // @ts-expect-error entry is implicitly an any so cant index
           entry[1] = value;
         } else {
           Object.defineProperty(key, name, {
@@ -117,7 +118,7 @@ export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
     }
   }
 
-  get(key: K): V | void {
+  get(key: K): V | undefined {
     if (!key) {
       throw new Error(`WeakMap expected key`);
     }
@@ -138,8 +139,10 @@ export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
       try {
         const entry = key[this.name];
 
+        // @ts-expect-error entry is implicitly an any so cant index
         if (entry && entry[0] === key) {
-          return entry[1];
+          // @ts-expect-error entry is implicitly an any so cant index
+          return entry[1] as V;
         }
 
         return;
@@ -160,7 +163,7 @@ export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
     return this.values[index];
   }
 
-  delete(key: K) {
+  delete(key: K): void {
     if (!key) {
       throw new Error(`WeakMap expected key`);
     }
@@ -179,7 +182,9 @@ export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
       try {
         const entry = key[this.name];
 
+        // @ts-expect-error entry is implicitly an any so cant index
         if (entry && entry[0] === key) {
+          // @ts-expect-error entry is implicitly an any so cant index
           entry[0] = entry[1] = undefined;
         }
       } catch (err) {
@@ -219,6 +224,7 @@ export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
       try {
         const entry = key[this.name];
 
+        // @ts-expect-error entry is implicitly an any so cant index
         if (entry && entry[0] === key) {
           return true;
         }
@@ -237,7 +243,7 @@ export class CrossDomainSafeWeakMap<K: Object, V: mixed> {
 
   getOrSet(key: K, getter: () => V): V {
     if (this.has(key)) {
-      // $FlowFixMe
+      // @ts-expect-error v | undefined is not assignable to v. need a guard check
       return this.get(key);
     }
 

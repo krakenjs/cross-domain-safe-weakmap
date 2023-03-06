@@ -1,13 +1,10 @@
-/* @flow */
-/* eslint import/no-nodejs-modules: off, import/no-default-export: off */
-
-import type { WebpackConfig } from "@krakenjs/webpack-config-grumbler/index.flow";
 import { getWebpackConfig } from "@krakenjs/webpack-config-grumbler";
 
 export const FILE_NAME = "cross-domain-safe-weakmap";
 export const MODULE_NAME = "xdsweakmap";
 
-export const WEBPACK_CONFIG: WebpackConfig = getWebpackConfig({
+export const WEBPACK_CONFIG = getWebpackConfig({
+  entry: "./src/index.ts",
   filename: `${FILE_NAME}.js`,
   modulename: MODULE_NAME,
   vars: {
@@ -16,7 +13,8 @@ export const WEBPACK_CONFIG: WebpackConfig = getWebpackConfig({
   },
 });
 
-export const WEBPACK_CONFIG_MIN: WebpackConfig = getWebpackConfig({
+export const WEBPACK_CONFIG_MIN = getWebpackConfig({
+  entry: "./src/index.ts",
   filename: `${FILE_NAME}.min.js`,
   modulename: MODULE_NAME,
   minify: true,
@@ -26,7 +24,8 @@ export const WEBPACK_CONFIG_MIN: WebpackConfig = getWebpackConfig({
   },
 });
 
-export const WEBPACK_CONFIG_TEST: WebpackConfig = getWebpackConfig({
+export const WEBPACK_CONFIG_TEST = getWebpackConfig({
+  entry: "./src/index.ts",
   modulename: MODULE_NAME,
   options: {
     devtool: "inline-source-map",

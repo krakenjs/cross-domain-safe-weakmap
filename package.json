@@ -91,7 +91,7 @@
     "standard-version": "^9.3.2"
   },
   "dependencies": {
-    "@krakenjs/cross-domain-utils": "^3.0.2"
+    "@krakenjs/cross-domain-utils": "^v4.0.0-typescript.2"
   },
   "lint-staged": {
     "*": "prettier --write --ignore-unknown"

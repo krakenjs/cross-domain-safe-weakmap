@@ -1,6 +1,9 @@
 /* @flow */
 
-import { isWindow, isWindowClosed } from "@krakenjs/cross-domain-utils/src";
+import {
+  isWindow,
+  isWindowClosed,
+} from "@krakenjs/cross-domain-utils/dist/esm";
 
 import { hasNativeWeakMap } from "./native";
 import { noop, safeIndexOf } from "./util";
